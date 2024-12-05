@@ -10,7 +10,7 @@
     <el-menu-item index="0">
       <img
         style="width: 100px"
-        src="../assets/20241203155134.jpg"
+        src="../assets/uooc.png"
         alt="Element logo"
       />
     </el-menu-item>
@@ -36,12 +36,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref,watchEffect } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import Avatar from './Avatar.vue';
 import NavDropdown from './NavDropdown.vue';
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 const router = useRouter()
+const route = useRoute()
 
 const homePageIndex = ref('1')
 const aboutUsIndex = ref('2')
@@ -50,7 +51,6 @@ const presentIndex = ref(homePageIndex.value)
 
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key,keyPath)
-  presentIndex.value = key
   switch (key) {
     case homePageIndex.value:
       router.push('/home');
@@ -65,6 +65,18 @@ const handleSelect = (key: string, keyPath: string[]) => {
       break;
   }
 }
+
+watchEffect(() => {
+  if (route.path === '/home') {
+    presentIndex.value = homePageIndex.value;
+  } else if (route.path === '/about') {
+    presentIndex.value = aboutUsIndex.value;
+  } else if (route.path === '/courses') {
+    presentIndex.value = courseIndex.value;
+  } else {
+    presentIndex.value = '0'; // 默认或未匹配情况
+  }
+});
 
 // 搜索框
 const searchInput = ref('')

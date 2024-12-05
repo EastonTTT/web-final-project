@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import FeaturedContainer from '../pages/homepage/FeaturedContainer.vue';
+import FeaturedContainer from '../pages/homePage/FeaturedContainer.vue';
 </script>
 
 <style>

@@ -1,11 +1,19 @@
 <template>
-  <h1>welcome to home page!</h1>
+  <div class="breadcrumb">
+    <breadcrumb/>
+  </div>
+
+  <carousel/>
 </template>
 
-<script>
+<script setup lang="ts">
+import Carousel from './Carousel.vue'
+import Breadcrumb from './Breadcrumb.vue';
 
 </script>
 
-<style>
-
+<style scoped lang="less">
+.breadcrumb{
+  margin: 10px;
+}
 </style>

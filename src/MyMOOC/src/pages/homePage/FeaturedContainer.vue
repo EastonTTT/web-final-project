@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import CourseList from './CourseList.vue'
+// import CourseList from './CourseList.vue'
 import Carousel from './Carousel.vue'
 </script>
 
