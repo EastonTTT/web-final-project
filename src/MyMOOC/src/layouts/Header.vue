@@ -1,9 +1,9 @@
 <template>
-  <NavBar></NavBar>
+
 </template>
 
 <script setup lang="ts">
-import NavBar from '../pages/homePage/NavBar.vue'
+import NavBar from '../components/NavBar.vue'
 
 </script>
 

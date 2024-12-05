@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    :default-active="activeIndex"
+    :default-active="homePageIndex"
     class="el-menu-demo"
     mode="horizontal"
     :ellipsis="false"
@@ -10,16 +10,16 @@
     <el-menu-item index="0">
       <img
         style="width: 100px"
-        src="../../assets/20241203155134.jpg"
+        src="../assets/20241203155134.jpg"
         alt="Element logo"
       />
     </el-menu-item>
     <!-- 表项 -->
-    <el-menu-item index="1"><el-text class="mx-1" size="large">首页</el-text></el-menu-item>
+    <el-menu-item :index="homePageIndex"><el-text class="mx-1" size="large">首页</el-text></el-menu-item>
 
-    <el-menu-item index="2"><nav-dropdown/></el-menu-item>
+    <el-menu-item :index="aboutUsIndex"><el-text class="mx-1" size="large">关于我们</el-text></el-menu-item>
 
-    <el-menu-item index="3"><el-text class="mx-1" size="large">关于我们</el-text></el-menu-item>
+    <el-menu-item :index="courseIndex" @click="goToCourses"><nav-dropdown/></el-menu-item>
 
     <!-- 搜索框 -->
     <el-input
@@ -40,11 +40,25 @@ import { ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import Avatar from './Avatar.vue';
 import NavDropdown from './NavDropdown.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 
-const activeIndex = ref('1')
+const activeIndex = ()=> homePageIndex
+
+const homePageIndex = ref('1')
+const aboutUsIndex = ref('2')
+const courseIndex = ref('3')
+
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
+
+function goToCourses(){
+
+  router.push('/courses')
+  console.log('jump to courses...')
+}
+
 // 搜索框
 const searchInput = ref('')
 

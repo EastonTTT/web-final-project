@@ -1,3 +1,4 @@
+<!-- 轮播图组件 -->
 <template>
   <div class="container">
     <carousel></carousel>
@@ -12,7 +13,7 @@ import Carousel from './Carousel.vue'
 
 <style scoped lang="less">
 .container{
-  margin: 0 50px;
+  margin: 20px 50px;
   position: relative;
   .course-list{
     position: absolute;

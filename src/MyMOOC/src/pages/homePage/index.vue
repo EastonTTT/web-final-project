@@ -1,11 +1,9 @@
 <template>
-
+  <h1>welcome to home page!</h1>
 </template>
 
 <script>
-export default {
 
-}
 </script>
 
 <style>
