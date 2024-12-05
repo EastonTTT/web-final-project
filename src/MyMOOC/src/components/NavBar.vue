@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    :default-active="homePageIndex"
+    :default-active="presentIndex"
     class="el-menu-demo"
     mode="horizontal"
     :ellipsis="false"
@@ -19,7 +19,7 @@
 
     <el-menu-item :index="aboutUsIndex"><el-text class="mx-1" size="large">关于我们</el-text></el-menu-item>
 
-    <el-menu-item :index="courseIndex" @click="goToCourses"><nav-dropdown/></el-menu-item>
+    <el-menu-item :index="courseIndex"><nav-dropdown/></el-menu-item>
 
     <!-- 搜索框 -->
     <el-input
@@ -43,20 +43,27 @@ import NavDropdown from './NavDropdown.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 
-const activeIndex = ()=> homePageIndex
-
 const homePageIndex = ref('1')
 const aboutUsIndex = ref('2')
 const courseIndex = ref('3')
+const presentIndex = ref(homePageIndex.value)
 
 const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-function goToCourses(){
-
-  router.push('/courses')
-  console.log('jump to courses...')
+  console.log(key,keyPath)
+  presentIndex.value = key
+  switch (key) {
+    case homePageIndex.value:
+      router.push('/home');
+      console.log('jump to home...')
+      break;
+    case aboutUsIndex.value:
+      router.push('/about');
+      break;
+    case courseIndex.value:
+      router.push('/courses')
+      console.log('jump to courses...')
+      break;
+  }
 }
 
 // 搜索框
