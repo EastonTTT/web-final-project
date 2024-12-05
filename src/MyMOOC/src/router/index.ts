@@ -1,5 +1,6 @@
 import HomePage from '@/pages/homePage/index.vue'
 import CoursePage from '@/pages/coursePage/index.vue'
+import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 
@@ -14,8 +15,10 @@ const router = createRouter({
       children:[
         {
           path:'/home',
-            name:'HomePage',
-          component:HomePage
+          name:'HomePage',
+          component:HomePage,
+          children:[
+          ]
         },
         {
           path:'/courses',
@@ -24,6 +27,11 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path:'/login',
+      name:'login',
+      component:LoginForm,
+    }
 
   ],
 })

@@ -30,25 +30,34 @@
       :prefix-icon="Search"
     />
     <el-button type="primary" :icon="Search" size="small" style="margin:auto 10px">Search</el-button>
-    <div class="my-button"><el-button type="primary" v-if="!ifLogin">登录</el-button></div>
+    <div class="my-button" v-if="!ifLogin"><login-button/></div>
     <Avatar v-if="ifLogin"></Avatar>
   </el-menu>
 </template>
 
 <script lang="ts" setup>
+
+// IMPORT AREA:
 import { ref,watchEffect } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import Avatar from './Avatar.vue';
 import NavDropdown from './NavDropdown.vue';
 import { useRouter,useRoute } from 'vue-router';
+import func from '../../vue-temp/vue-editor-bridge';
+import LoginButton from '@/pages/homePage/login/LoginButton.vue';
+
 const router = useRouter()
 const route = useRoute()
 
+// PARAMS AREA:
 const homePageIndex = ref('1')
 const aboutUsIndex = ref('2')
 const courseIndex = ref('3')
 const presentIndex = ref(homePageIndex.value)
+const searchInput = ref('')
+const ifLogin = ref(false)
 
+// FUNCTIONS AREA:
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key,keyPath)
   switch (key) {
@@ -78,10 +87,13 @@ watchEffect(() => {
   }
 });
 
-// 搜索框
-const searchInput = ref('')
+// function goToLogin(){
+//   console.log('login click.')
+//   router.push('/login')
+// }
 
-const ifLogin = ref(false)
+// 搜索框
+
 </script>
 
 <style>
@@ -94,4 +106,5 @@ const ifLogin = ref(false)
 .my-button{
   margin: 12px 5px;
 }
+
 </style>

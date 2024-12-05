@@ -4,11 +4,13 @@
   </div>
 
   <carousel/>
+
 </template>
 
 <script setup lang="ts">
 import Carousel from './Carousel.vue'
 import Breadcrumb from './Breadcrumb.vue';
+import btn from '@/pages/homePage/login/btn.vue';
 
 </script>
 
