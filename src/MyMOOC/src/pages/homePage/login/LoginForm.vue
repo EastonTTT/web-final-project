@@ -1,6 +1,6 @@
 <template>
   <div style="width: 350px">
-    <t-form ref="form" :data="formData" :colon="true" :label-width="0" @reset="onReset" @submit="onSubmit">
+    <t-form ref="form" :data="formData" :colon="true" :label-width="0" @reset="onReset" @submit="onSubmit" >
       <t-form-item name="account">
         <t-input v-model="formData.account" clearable placeholder="请输入账户名">
           <template #prefix-icon>
@@ -9,14 +9,16 @@
         </t-input>
       </t-form-item>
 
-      <t-form-item name="password">
-        <t-input v-model="formData.password" type="password" clearable placeholder="请输入密码">
+      <t-form-item name="password" style="margin: 0;">
+        <t-input v-model="formData.password" type="password" clearable placeholder="请输入密码" >
           <template #prefix-icon>
             <lock-on-icon />
           </template>
         </t-input>
       </t-form-item>
-
+      <t-form-item style="margin-left: 275px; margin-bottom: 0;">
+        <t-switch label="记住密码"/>
+      </t-form-item>
       <t-form-item>
         <t-button theme="primary" type="submit" block>登录</t-button>
       </t-form-item>
