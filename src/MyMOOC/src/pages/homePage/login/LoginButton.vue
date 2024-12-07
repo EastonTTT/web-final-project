@@ -24,11 +24,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRouter,useRoute } from 'vue-router';
-import RegisterLink from './RegisterLink.vue'
+import RegisterLink from '../register/RegisterLink.vue'
 import LoginForm from './LoginForm.vue'
 import ForgetPasswordLink from './ForgetPasswordLink.vue'
 
-const dialogTableVisible = ref(false)
 const dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 

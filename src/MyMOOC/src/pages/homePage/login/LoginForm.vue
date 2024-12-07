@@ -16,7 +16,7 @@
           </template>
         </t-input>
       </t-form-item>
-      <t-form-item style="margin-left: 275px; margin-bottom: 0;">
+      <t-form-item style="margin: 5px 0 2px 275px;">
         <t-switch label="记住密码"/>
       </t-form-item>
       <t-form-item>
@@ -38,7 +38,7 @@ const onReset: FormProps['onReset'] = () => {
 };
 const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
   if (validateResult === true) {
-    MessagePlugin.success('提交成功');
+    MessagePlugin.success('登录成功');
   } else {
     console.log('Validate Errors: ', firstError, validateResult);
     MessagePlugin.warning(firstError);
