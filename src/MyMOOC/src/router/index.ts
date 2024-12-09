@@ -25,6 +25,11 @@ const router = createRouter({
           name:'coursesAll',
           component:CoursePage
         },
+        {
+          path:'/user',
+          name:'user',
+          component:
+        }
       ]
     },
 

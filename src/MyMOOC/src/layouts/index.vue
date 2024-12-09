@@ -2,6 +2,8 @@
   <div class="page">
     <nav-bar></nav-bar>
     <router-view/>
+    <!-- <h1>divided</h1> -->
+    <my-footer></my-footer>
   </div>
 
 </template>
@@ -11,6 +13,7 @@ import { ref } from 'vue';
 import Header from './Header.vue';
 import Content from './Content.vue';
 import NavBar from '@/components/NavBar.vue';
+import MyFooter from '../components/MyFooter.vue';
 
 </script>
 

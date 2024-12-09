@@ -1,10 +1,12 @@
 <template>
-  <el-menu
+  <div class="nav-bar">
+    <el-menu
     :default-active="presentIndex"
     class="el-menu-demo"
     mode="horizontal"
     :ellipsis="false"
     @select="handleSelect"
+    style="height: 80px;"
   >
     <!-- logo -->
     <el-menu-item index="0">
@@ -24,15 +26,17 @@
     <!-- 搜索框 -->
     <el-input
       v-model="searchInput"
-      style="width: 240px;height:40px;margin-top: 10px;"
+      style="width: 240px;height:40px;margin-top: 20px;"
       size="large"
       placeholder="Please Input"
       :prefix-icon="Search"
     />
     <el-button type="primary" :icon="Search" size="small" style="margin:auto 10px">Search</el-button>
-    <div class="my-button" v-if="!ifLogin"><login-button/></div>
+    <div class="my-button" v-if="!ifLogin" style="margin-top: 23px;"><login-button/></div>
     <Avatar v-if="ifLogin"></Avatar>
   </el-menu>
+  </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -96,15 +100,21 @@ watchEffect(() => {
 
 </script>
 
-<style>
-.el-menu--horizontal > .el-menu-item:nth-child(4) {
+<style lang="less" scoped>
+.nav-bar{
+  .el-menu--horizontal > .el-menu-item:nth-child(4) {
   margin-right: auto;
-}
-.el-menu-item{
-  font-size: 20px;
-}
-.my-button{
-  margin: 12px 5px;
+  }
+  .my-button{
+    margin: 12px 5px;
+  }
+
+
+
 }
 
+
 </style>
+
+
+

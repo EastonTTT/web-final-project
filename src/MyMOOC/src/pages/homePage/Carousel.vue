@@ -1,6 +1,6 @@
 <!-- 轮播图组件 -->
 <template>
-  <el-carousel autoplay :interval="5000" type="card" height="400px" loop pause-on-hover >
+  <el-carousel autoplay :interval="5000" type="card" height="450px" loop pause-on-hover >
     <el-carousel-item v-for="item in 6" :key="item">
       <h3 text="2xl" justify="center">{{ item }}</h3>
     </el-carousel-item>
