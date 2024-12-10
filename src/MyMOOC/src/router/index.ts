@@ -3,7 +3,7 @@ import CoursePage from '@/pages/coursePage/index.vue'
 import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
-import User from '@/pages/user/User.vue'
+import User from '@/pages/user/index.vue'
 
 
 const router = createRouter({

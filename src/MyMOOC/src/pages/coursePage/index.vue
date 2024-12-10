@@ -1,5 +1,5 @@
 <template>
-  <div class="breadcrumb"><breadcrumb/></div>
+  <breadcrumb style="margin: 10px;"/>
 
 </template>
 
@@ -9,7 +9,4 @@ import Breadcrumb from './Breadcrumb.vue';
 </script>
 
 <style lang="less" scoped>
-.breadcrumb{
-  margin: 10px;
-}
 </style>
