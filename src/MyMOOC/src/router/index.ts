@@ -3,6 +3,7 @@ import CoursePage from '@/pages/coursePage/index.vue'
 import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
+import User from '@/pages/user/User.vue'
 
 
 const router = createRouter({
@@ -28,7 +29,29 @@ const router = createRouter({
         {
           path:'/user',
           name:'user',
-          component:
+          component:User,
+          children:[
+            {
+              path:'/myCourses',
+              name:'myCourdse',
+              component:User
+            },
+            {
+              path:'/myInfo',
+              name:'myInfo',
+              component:User
+            },
+            {
+              path:'/myTODO',
+              name:'myTODO',
+              component:User
+            },
+            {
+              path:'/accountManage',
+              name:'accountManage',
+              component:User
+            }
+          ]
         }
       ]
     },

@@ -6,7 +6,7 @@
 
       <div class="login-form">
         <h2>用户登录</h2>
-        <login-form/>
+        <login-form @close-dialog="dialogFormVisible = false"/>
           <div class="links">
             <forget-password-link/>
             <register-link></register-link>
@@ -27,6 +27,7 @@ import { useRouter,useRoute } from 'vue-router';
 import RegisterLink from '../register/RegisterLink.vue'
 import LoginForm from './LoginForm.vue'
 import ForgetPasswordLink from './ForgetPasswordLink.vue'
+
 
 const dialogFormVisible = ref(false)
 const formLabelWidth = '140px'

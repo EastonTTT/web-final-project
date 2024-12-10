@@ -29,6 +29,13 @@
 import { reactive } from 'vue';
 import { MessagePlugin, FormProps } from 'tdesign-vue-next';
 import { DesktopIcon, LockOnIcon } from 'tdesign-icons-vue-next';
+import { useRouter } from 'vue-router';
+import { defineEmits } from 'vue';
+import { LogStatus } from '@/pages/homePage/login/LogStatus';
+
+
+const router = useRouter()
+const emit = defineEmits(['close-dialog']);
 const formData: FormProps['data'] = reactive({
   account: '',
   password: '',
@@ -38,7 +45,10 @@ const onReset: FormProps['onReset'] = () => {
 };
 const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
   if (validateResult === true) {
-    MessagePlugin.success('登录成功');
+    MessagePlugin.success('登录成功')
+    emit('close-dialog');
+    LogStatus.isLogged = true;
+    // router.push('/user');
   } else {
     console.log('Validate Errors: ', firstError, validateResult);
     MessagePlugin.warning(firstError);

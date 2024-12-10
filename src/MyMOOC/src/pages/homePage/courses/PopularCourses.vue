@@ -43,7 +43,7 @@ const images = ref([
   .course-container{
     display: flex;
     margin: 20px 0;
-    animation: move 15ws infinite;
+    animation: move 15s infinite;
     &:hover{
         animation-play-state: paused;
       }
