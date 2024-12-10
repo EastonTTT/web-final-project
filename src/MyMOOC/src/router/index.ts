@@ -4,6 +4,7 @@ import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import User from '@/pages/user/index.vue'
+import MyInfo from '@/pages/user/MyInfo.vue'
 
 
 const router = createRouter({
@@ -32,22 +33,22 @@ const router = createRouter({
           component:User,
           children:[
             {
-              path:'/myCourses',
-              name:'myCourdse',
+              path:'myCourses',
+              name:'myCourses',
               component:User
             },
             {
-              path:'/myInfo',
+              path:'myInfo',
               name:'myInfo',
-              component:User
+              component:MyInfo
             },
             {
-              path:'/myTODO',
+              path:'myTODO',
               name:'myTODO',
               component:User
             },
             {
-              path:'/accountManage',
+              path:'accountManage',
               name:'accountManage',
               component:User
             }

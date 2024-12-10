@@ -1,12 +1,15 @@
 <template>
   <breadcrumb style="margin: 10px;"/>
-  <header><h1>header</h1></header>
+  <header>
+    <info-bar></info-bar>
+  </header>
   <user-container/>
 </template>
 
 <script lang="ts" setup>
 import Breadcrumb from './Breadcrumb.vue';
 import UserContainer from './UserContainer.vue';
+import InfoBar from './InfoBar.vue';
 </script>
 
 <style lang="less" scoped>
@@ -21,7 +24,7 @@ import UserContainer from './UserContainer.vue';
 }
 
 header {
-  height: 300px; /* 容器高度为视窗高度 */
+  height: 220px; /* 容器高度为视窗高度 */
   display: flex;
   align-items: center;
   justify-content: center;
