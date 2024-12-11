@@ -81,6 +81,7 @@ function goTo(){
   router.push('')
   menuValue.value = ''
 }
+
 function goToCoursesManage(){
   router.push('coursesManage')
 }
