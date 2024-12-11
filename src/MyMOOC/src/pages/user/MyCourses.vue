@@ -1,3 +1,21 @@
+<!-- MyCourses.vue -->
+<template>
+  <div>
+    <h2>我的课程</h2>
+    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+      <el-tab-pane label="我的学习" name="myLearning">
+        <MyLearning />
+      </el-tab-pane>
+      <el-tab-pane label="待办事项" name="toDoList">
+        <ToDoList />
+      </el-tab-pane>
+      <el-tab-pane label="已完成" name="completedTasks">
+        <CompletedTasks />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+</template>
+
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import MyLearning from './MyLearning.vue';
@@ -5,17 +23,18 @@ import ToDoList from './ToDoList.vue';
 import CompletedTasks from './CompletedTasks.vue';
 
 export default defineComponent({
-  name: 'CourcesManage',
+  name: 'MyCourses',
   components: {
     MyLearning,
     ToDoList,
     CompletedTasks,
   },
   setup() {
-    const activeTab = ref('courseware');
+    const activeTab = ref('myLearning');
 
     const handleTabClick = (tab: any) => {
       // 处理标签点击事件（如果需要）
+      console.log(`切换到标签: ${tab.label}`);
     };
 
     return {
