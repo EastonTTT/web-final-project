@@ -5,37 +5,36 @@
       <template #logo>
         <img width="136" class="logo" src="https://www.tencent.com/img/index/menu_logo_hover.png" alt="logo" />
       </template>
-      <t-menu-item value="account-manage" style="height: 60px" @click="goToAccountManage">
-        <template #icon>
-          <t-icon name="server" />
-        </template>
-        账号管理
-      </t-menu-item>
-      <t-menu-item value="root" style="height: 60px" @click="goToCoursesManage">
-        <template #icon>
-          <t-icon name="root-list" />
-        </template>
-        课程管理
-      </t-menu-item>
-      <t-menu-item value="mail" style="height: 60px" @click="goTo">
-        <template #icon>
-          <t-icon name="mail" />
-        </template>
-        消息区
-      </t-menu-item>
+
       <t-menu-item value="my-info" style="height: 60px" @click="goToPersonal">
         <template #icon>
           <t-icon name="user-circle" />
         </template>
         个人信息
       </t-menu-item>
-      <t-menu-item value="play-circle" style="height: 60px" @click="goToMyCourses">
+
+      <t-menu-item value="account-manage" style="height: 60px" @click="goToAccountManage">
+        <template #icon>
+          <t-icon name="server" />
+        </template>
+        账号管理
+      </t-menu-item>
+
+      <t-menu-item value="course-manage" style="height: 60px" @click="goToCoursesManage">
+        <template #icon>
+          <t-icon name="root-list" />
+        </template>
+        课程管理
+      </t-menu-item>
+
+      <t-menu-item value="my-courses" style="height: 60px" @click="goToMyCourses">
         <template #icon>
           <t-icon name="play-circle" />
         </template>
         我的课程
       </t-menu-item>
-      <t-menu-item value="edit1" style="height: 60px" @click="goToMyDiscussion">
+
+      <t-menu-item value="my-discussion" style="height: 60px" @click="goToMyDiscussion">
         <template #icon>
           <t-icon name="edit-1" />
         </template>
@@ -55,11 +54,11 @@
 import { useRoute,useRouter } from 'vue-router';
 import {ref} from 'vue'
 const router = useRouter()
-const menuValue = ref('account-manage')
+const menuValue = ref('my-info')
 
 function goToAccountManage(){
-  router.push('')
-  menuValue.value = ''
+  router.push({name:'accountManage'})
+  menuValue.value = 'account-manage'
 }
 
 function goToPersonal(){
@@ -68,22 +67,19 @@ function goToPersonal(){
 }
 
 function goToMyCourses(){
-  router.push('')
-  menuValue.value = ''
+  router.push({name:'myCourses'})
+  menuValue.value = 'my-courses'
 }
 
 function goToMyDiscussion(){
-  router.push('')
-  menuValue.value = ''
-}
-
-function goTo(){
-  router.push('')
-  menuValue.value = ''
+  router.push({name:'myDiscussion'})
+  menuValue.value = 'my-discussion'
 }
 
 function goToCoursesManage(){
-  router.push('coursesManage')
+  router.push({name:'coursesManage'})
+  menuValue.value = 'course-manage'
+
 }
 </script>
 

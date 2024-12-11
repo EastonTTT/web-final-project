@@ -1,3 +1,4 @@
+<!-- 个人中心炫光背景上的内容部分 -->
 <template>
   <div class="info-container">
       <el-avatar :size="150"
