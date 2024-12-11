@@ -11,11 +11,11 @@
         </template>
         账号管理
       </t-menu-item>
-      <t-menu-item value="root" style="height: 60px" @click="">
+      <t-menu-item value="root" style="height: 60px" @click="goToCoursesManage">
         <template #icon>
           <t-icon name="root-list" />
         </template>
-        根目录
+        课程管理
       </t-menu-item>
       <t-menu-item value="mail" style="height: 60px" @click="goTo">
         <template #icon>
@@ -80,6 +80,9 @@ function goToMyDiscussion(){
 function goTo(){
   router.push('')
   menuValue.value = ''
+}
+function goToCoursesManage(){
+  router.push('coursesManage')
 }
 </script>
 

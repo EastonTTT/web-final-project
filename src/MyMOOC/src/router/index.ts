@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import User from '@/pages/user/index.vue'
 import MyInfo from '@/pages/user/MyInfo.vue'
+import CoursesManage from '@/pages/user/CoursesManage.vue'
 
 
 const router = createRouter({
@@ -51,6 +52,11 @@ const router = createRouter({
               path:'accountManage',
               name:'accountManage',
               component:User
+            },
+            {
+              path:'coursesManage',
+              name:'coursesManage',
+              component:CoursesManage
             }
           ]
         }

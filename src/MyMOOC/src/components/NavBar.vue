@@ -10,7 +10,7 @@
       <el-menu-item :index="homePageIndex"><el-text class="mx-1" size="large">首页</el-text></el-menu-item>
 
       <el-menu-item :index="aboutUsIndex"><el-text class="mx-1" size="large">关于我们</el-text></el-menu-item>
-
+      <!-- 课程下拉列表 -->
       <el-menu-item :index="courseIndex"><nav-dropdown /></el-menu-item>
 
       <!-- 搜索框 -->
@@ -21,6 +21,7 @@
       <!-- <el-avatar v-if="LogStatus.isLogged" size="large" style="margin: 10px; cursor: pointer" @click="goToUser"
         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" /> -->
 
+      <!-- 头像 -->
       <el-dropdown >
         <span class="el-dropdown-link">
           <el-avatar v-if="LogStatus.isLogged" size="large" style="margin: 10px; cursor: pointer"
