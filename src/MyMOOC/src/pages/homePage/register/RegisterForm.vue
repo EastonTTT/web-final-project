@@ -29,7 +29,11 @@
 
 import { ref, reactive } from 'vue';
 import { MessagePlugin, FormInstanceFunctions, FormProps, CustomValidator } from 'tdesign-vue-next';
-import axiosInstance from '@/utils/request/Axios';
+// import { defineEmits } from 'vue';
+import MyAxios from '@/utils/request/Axios.ts';
+
+
+const emit = defineEmits(['close-dialog']);
 
 
 const form = ref<FormInstanceFunctions>(null);
@@ -43,11 +47,26 @@ const onReset: FormProps['onReset'] = () => {
   MessagePlugin.success('重置成功');
 };
 
-const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError, e }) => {
+const onSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError, e }) => {
+
   e.preventDefault();
   if (validateResult === true) {
-    MessagePlugin.success('提交成功');
-
+    try{
+      const response = await MyAxios.myPosting('/register',
+        {
+          username: formData.account,
+          password: formData.password
+        });
+        if(response.data.status === 200){
+          MessagePlugin.success('注册成功')
+          emit('close-dialog');
+        }else{
+          MessagePlugin.error('登陆失败：' + response.data.message)
+        }
+    }catch(error){
+      console.log('登录请求失败',error)
+      MessagePlugin.error('登录请求失败')
+    }
   } else {
     console.log('Validate Errors: ', firstError, validateResult);
     MessagePlugin.warning(firstError);

@@ -5,7 +5,7 @@
       <el-dialog v-model="dialogFormVisible" width="500">
         <div class="register-form">
           <h2>用户注册</h2>
-          <register-form />
+          <register-form @close-dialog="dialogFormVisible = false"/>
         </div>
       </el-dialog>
     </div>

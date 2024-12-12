@@ -15,9 +15,8 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public boolean ifLogin(LoginRequestDTO loginRequestDTO){
-        UserDTO user = userMapper.selectUser(loginRequestDTO);
-        return user != null;
+    public UserDTO ifLogin(LoginRequestDTO loginRequestDTO){
+        return userMapper.selectUser(loginRequestDTO);
     }
 
     public boolean register(LoginRequestDTO loginRequestDTO){
