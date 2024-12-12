@@ -8,6 +8,9 @@
       <el-tab-pane label="课程发布" name="coursePublishing">
         <CoursePublishing />
       </el-tab-pane>
+      <el-tab-pane label="已发布课程" name="publishedCourses">
+        <PublishedCourses />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -16,10 +19,12 @@
 import { defineComponent, ref } from 'vue';
 import CourseManagement from './CoursewareManagement.vue';
 import CoursePublishing from './CoursePublishing.vue';
+import PublishedCourses from './PublishedCourses.vue';
 
 export default defineComponent({
   name: 'CourcesManage',
   components: {
+    PublishedCourses,
     CourseManagement,
     CoursePublishing,
   },
