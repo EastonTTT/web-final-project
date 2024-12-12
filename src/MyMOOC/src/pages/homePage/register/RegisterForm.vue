@@ -29,6 +29,7 @@
 
 import { ref, reactive } from 'vue';
 import { MessagePlugin, FormInstanceFunctions, FormProps, CustomValidator } from 'tdesign-vue-next';
+import axiosInstance from '@/utils/request/Axios';
 
 
 const form = ref<FormInstanceFunctions>(null);
@@ -46,6 +47,7 @@ const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError, e }) => {
   e.preventDefault();
   if (validateResult === true) {
     MessagePlugin.success('提交成功');
+
   } else {
     console.log('Validate Errors: ', firstError, validateResult);
     MessagePlugin.warning(firstError);
