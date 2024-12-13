@@ -21,7 +21,7 @@ public class loginController {
 
         UserDTO user = userService.ifLogin(loginRequestDTO);
         if (user != null){
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user.getUsername(),user.getRole());
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user.getUser_id(),user.getUsername(),user.getRole());
             return Result.success(loginResponseDTO);
         }else {
             return Result.failed("用户名或密码错误");
