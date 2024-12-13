@@ -1,37 +1,21 @@
 <template>
   <t-space direction="vertical" size="large" style="margin: 30px 100px;">
     <!-- 可以使用全局 ConfigProvider errorMessage 配置规则校验结果描述，而无需给每一个表单都配置校验信息 -->
-    <t-radio-group v-model="errorConfig" variant="default-filled">
-      <t-radio-button value="default">
-        <t-popup content="Form.errorMessage 为空，使用组件内置校验信息。重置后，点击提交观察校验结果信息">
-          使用表单默认校验信息
-        </t-popup>
-      </t-radio-button>
 
-      <t-radio-button value="config">
-        <t-popup content="统一配置 Form.errorMessage，使用自定义配置的校验信息。重置后，点击提交观察校验结果信息">
-          表单统一配置校验信息
-        </t-popup>
-      </t-radio-button>
-    </t-radio-group>
 
     <!-- error-message 非必需 -->
     <t-form
       ref="form"
       :data="formData"
       :rules="rules"
-      :error-message="errorConfig === 'default' ? undefined : errorMessage"
       scroll-to-first-error="smooth"
       @reset="onReset"
       @submit="onSubmit"
+      style="margin: 20px 10px;"
     >
       <!-- !!!注意：当 FormItem 的 label 属性为 Function 时，errorMessage 模板中的 ${name} 会被替换为 FormItem.name 属性值 -->
-      <t-form-item :label="renderLabel" name="account">
+      <t-form-item :label="renderLabel" name="account" style="width: 400px;">
         <t-input v-model="formData.account"></t-input>
-      </t-form-item>
-
-      <t-form-item label="个人简介" name="description">
-        <t-input v-model="formData.description"></t-input>
       </t-form-item>
 
       <t-form-item label="密码" name="password">
@@ -49,31 +33,18 @@
         </t-radio-group>
       </t-form-item>
 
-      <t-form-item label="学院" name="college">
-        <t-select v-model="formData.college" class="demo-select-base" clearable>
-          <t-option v-for="(item, index) in options" :key="index" :value="item.value" :label="item.label">
-            {{ item.label }}
-          </t-option>
-        </t-select>
-      </t-form-item>
-
       <t-form-item
         label="入学时间"
         name="date"
         :rules="[{ date: { delimiters: ['/', '-', '.'] }, message: '日期格式有误' }]"
       >
-        <t-input v-model="formData.date"></t-input>
-      </t-form-item>
-
-      <t-form-item label="个人网站" name="content.url">
-        <t-input v-model="formData.content.url"></t-input>
+        <t-input v-model="formData.date" disabled=""></t-input>
       </t-form-item>
 
       <t-form-item>
         <t-space size="small">
           <t-button theme="primary" type="submit">提交</t-button>
           <t-button theme="default" variant="base" type="reset">重置</t-button>
-          <t-button theme="default" variant="base" @click="handleClear">清空校验结果</t-button>
         </t-space>
       </t-form-item>
     </t-form>
@@ -93,18 +64,11 @@ import {
 const formData: FormProps['data'] = reactive({
   account: '',
   password: '',
-  description: '',
   email: '',
   gender: '',
-  college: '',
   date: '',
-  content: {
-    url: '',
-  },
-  course: [],
 });
 const form = ref<FormInstanceFunctions>(null);
-const errorConfig = ref('default');
 const emailSuffix = ['@qq.com', '@163.com', '@gmail.com'];
 const emailOptions = computed<AutoCompleteProps['options']>(() => {
   const emailPrefix = formData.email.split('@')[0];
@@ -112,20 +76,7 @@ const emailOptions = computed<AutoCompleteProps['options']>(() => {
   return emailSuffix.map((suffix) => emailPrefix + suffix);
 });
 
-const options = [
-  {
-    label: '计算机学院',
-    value: '1',
-  },
-  {
-    label: '软件学院',
-    value: '2',
-  },
-  {
-    label: '物联网学院',
-    value: '3',
-  },
-];
+
 const onReset: FormProps['onReset'] = () => {
   MessagePlugin.success('重置成功');
 };
@@ -139,17 +90,6 @@ const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
 };
 const renderLabel: FormItemProps['label'] = () => '用户名';
 
-/* eslint-disable no-template-curly-in-string */
-const errorMessage = {
-  date: '${name}不正确',
-  url: '${name}不正确',
-  required: '请输入${name}',
-  max: '${name}字符长度不能超过 ${validate} 个字符，一个中文等于两个字符',
-  min: '${name}字符长度不能少于 ${validate} 个字符，一个中文等于两个字符',
-  len: '${name}字符长度必须是 ${validate}',
-  pattern: '${name}不正确',
-  validator: '${name}有误',
-};
 const rules: FormProps['rules'] = {
   account: [
     {
@@ -166,7 +106,8 @@ const rules: FormProps['rules'] = {
   ],
   description: [
     {
-      validator: (val) => val.length >= 5,
+      validator: (val) => val.length >= 3,
+      message: '太短啦'
     },
     {
       validator: (val) => val.length < 10,
@@ -223,9 +164,7 @@ const rules: FormProps['rules'] = {
     },
   ],
 };
-const handleClear: ButtonProps['onClick'] = () => {
-  form.value.clearValidate();
-};
+
 </script>
 
 <style scoped>

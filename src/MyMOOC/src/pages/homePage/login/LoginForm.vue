@@ -48,8 +48,7 @@ interface LoginRecord {
 }
 
 const loginRecord = inject<LoginRecord>('loginRecord')
-console.log('from loginform:')
-// console.log(loginRecord)
+
 
 //登录表单内置校验方法:
 const rules: FormProps['rules'] = {

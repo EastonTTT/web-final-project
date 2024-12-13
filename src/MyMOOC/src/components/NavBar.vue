@@ -55,6 +55,8 @@ import LoginButton from '@/pages/homePage/login/LoginButton.vue';
 // import { LogStatus } from '@/pages/homePage/login/LogStatus';
 import { getLoginRecord,setLoginRecord,clearLoginRecord,defaultLoginRecord } from '@/pages/homePage/login/LoginRecord';
 import { flattedChildren } from 'element-plus/es/utils/index.mjs';
+import { ElNotification } from 'element-plus'
+
 
 const router = useRouter()
 const route = useRoute()
@@ -117,9 +119,18 @@ function logout(){
   loginRecord.username = null;
   loginRecord.role = null;
   clearLoginRecord();
+
+  //如果当前页面是个人中心的话，则跳转到主页面
+  if(router.currentRoute.value.path.indexOf('user') !== -1){
+    ElNotification({
+    title: 'Info',
+    message: '需要登录才能访问个人中心哦',
+    type: 'info',
+  })
+    router.push({name: 'HomePage'})
+  }
+
 }
-
-
 
 </script>
 

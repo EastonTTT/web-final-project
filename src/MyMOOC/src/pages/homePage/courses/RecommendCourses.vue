@@ -4,13 +4,16 @@
       <span>课程推荐</span>
        <h1>Advanced Course Recommendations</h1>
     </div>
-    <div class="course-container">
-       <div class="img-container" v-for="image in images" :key="image.id">
+    <div class="container">
+      <div class="course-container" v-for="image in images" :key="image.id">
+       <div class="img-container" >
         <img height="150px" :src="image.url" :alt="image.alt" >
         <h3>course info</h3>
         <p> school / teacher</p>
        </div>
     </div>
+    </div>
+
     <t-divider />
   </div>
   <!-- </div> -->
@@ -100,27 +103,36 @@ const images = ref([
 }
 
 .course-container{
-  display: flex;
-  flex-wrap: wrap;
-  overflow: hidden;
   justify-content: space-around;
-  margin: 20px;
+  margin: 20px 5px 0 5px;
   .img-container{
+    padding: 10px;
     margin: 0 30px 40px;
     border: 1px solid #000;
     text-align: center;
     overflow: hidden;
     width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     // height: 300px;
     img{
       // object-fit: contain;
       width: 100%; /* 使图片宽度填满容器 */
       height: 100%; /* 使图片高度填满容器 */
       object-fit: cover; /* 覆盖容器，保持图片的宽高比 */
+
     }
+
     display: flex;
     flex-direction: column;
-
   }
+  &:hover .img-container {
+    transform: scale(1.1); /* 鼠标悬停时放大图片 */
+    box-shadow: 0 0 20px rgba(0,0,0,0.5); /* 添加阴影 */
+    }
+}
+
+.container{
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>
