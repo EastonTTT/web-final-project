@@ -63,7 +63,7 @@ function goToCourses(){
   bottom: 0;
   background: url('@/assets/20170925173411_E5zjd.jpg');
   background-size: cover;
-  opacity: 0.1; /* 设置背景图片的透明度为50% */
+  opacity: 0.4; /* 设置背景图片的透明度% */
   z-index: -1;
 }
 </style>

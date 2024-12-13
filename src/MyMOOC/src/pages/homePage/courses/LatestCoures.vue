@@ -1,14 +1,14 @@
 <template>
   <div class="common-layout">
-    <el-container>
-      <el-header height="250px">
+    <el-container >
+      <el-header height="225px">
         <div class="header-img">
           <img src="@/assets/latest-title.png" alt="latest-header" width="100%" >
         </div>
       </el-header>
-      <el-container>
+      <el-container style="margin: 0 40px; background-color: white;">
         <el-aside width="350px">
-          <img src="@/assets/latest-courses.png" alt="latest-courses-img" width="350px">
+          <img src="@/assets/latest-courses.png" alt="latest-courses-img" width="100%">
         </el-aside>
 
         <el-main>
@@ -46,13 +46,13 @@ const images = ref([
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
-  justify-content: space-around;
+  justify-content: space-evenly;
   .img-container{
-    margin: 10px 0 50px 0;
+    margin: 30px 0 20px 0;
     border: 1px solid #000;
     text-align: center;
     overflow: hidden;
-    width: 300px;
+    width: 240px;
     // height: 300px;
     img{
       // object-fit: contain;

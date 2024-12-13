@@ -11,8 +11,8 @@
         <p> school / teacher</p>
        </div>
     </div>
-
-    </div>
+    <t-divider />
+  </div>
   <!-- </div> -->
 </template>
 
@@ -34,13 +34,12 @@ const images = ref([
 </script>
 
 <style lang="less" scoped>
-  // .recommend-courses{
-  //   background: url('../../../assets/20170925173411_E5zjd.jpg');
-  // }
+
   .recommend-courses {
   position: relative;
   z-index: 1;
-  margin: 20px 0 50px;
+  margin: 20px auto;
+  width: 1300px;
   // height:500px;
 
   .title-container {
@@ -105,12 +104,13 @@ const images = ref([
   flex-wrap: wrap;
   overflow: hidden;
   justify-content: space-around;
+  margin: 20px;
   .img-container{
-    margin: 10px 0;
+    margin: 0 30px 40px;
     border: 1px solid #000;
     text-align: center;
     overflow: hidden;
-    width: 300px;
+    width: 250px;
     // height: 300px;
     img{
       // object-fit: contain;
