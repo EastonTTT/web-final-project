@@ -17,14 +17,14 @@
       <el-input v-model="searchInput" style="width: 240px;height:40px;margin-top: 20px;" size="large"
         placeholder="Please Input" :prefix-icon="Search" />
       <el-button type="primary" :icon="Search" size="small" style="margin:auto 10px">Search</el-button>
-      <div class="my-button" v-if="!LogStatus.isLogged" style="margin-top: 23px;"><login-button /></div>
+      <div class="my-button" v-if="!loginRecord.isLogged" style="margin-top: 23px;"><login-button /></div>
       <!-- <el-avatar v-if="LogStatus.isLogged" size="large" style="margin: 10px; cursor: pointer" @click="goToUser"
         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" /> -->
 
       <!-- 头像 -->
       <el-dropdown >
         <span class="el-dropdown-link">
-          <el-avatar v-if="LogStatus.isLogged" size="large" style="margin: 10px; cursor: pointer"
+          <el-avatar v-if="loginRecord.isLogged" size="large" style="margin: 10px; cursor: pointer"
         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
         </span>
         <template #dropdown>
@@ -45,18 +45,28 @@
 <script lang="ts" setup>
 
 // IMPORT AREA:
-import { ref, watchEffect } from 'vue'
+import { inject, ref, watchEffect } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import Avatar from './Avatar.vue';
 import NavDropdown from './NavDropdown.vue';
 import { useRouter, useRoute } from 'vue-router';
 import func from '../../vue-temp/vue-editor-bridge';
 import LoginButton from '@/pages/homePage/login/LoginButton.vue';
-import { LogStatus } from '@/pages/homePage/login/LogStatus';
+// import { LogStatus } from '@/pages/homePage/login/LogStatus';
+import { getLoginRecord,setLoginRecord,clearLoginRecord,defaultLoginRecord } from '@/pages/homePage/login/LoginRecord';
 import { flattedChildren } from 'element-plus/es/utils/index.mjs';
 
 const router = useRouter()
 const route = useRoute()
+
+interface LoginRecord {
+  user_id: number | null;
+  username: string | null;
+  role: number | null;
+  isLogged: boolean;
+}
+
+const loginRecord = inject<LoginRecord>('loginRecord',defaultLoginRecord)
 
 // PARAMS AREA:
 const homePageIndex = ref('1')
@@ -102,7 +112,11 @@ function goToUser() {
 }
 
 function logout(){
-  LogStatus.isLogged = false
+  loginRecord.isLogged = false;
+  loginRecord.user_id = null;
+  loginRecord.username = null;
+  loginRecord.role = null;
+  clearLoginRecord();
 }
 
 
