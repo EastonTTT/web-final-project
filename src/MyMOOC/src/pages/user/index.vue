@@ -8,9 +8,26 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
+import { useRouter } from 'vue-router';
+import { defaultLoginRecord } from '../homePage/login/LoginRecord';
 import Breadcrumb from './Breadcrumb.vue';
 import UserContainer from './UserContainer.vue';
 import InfoBar from './InfoBar.vue';
+
+const router = useRouter();
+interface LoginRecord {
+  user_id: number | null;
+  username: string | null;
+  role: number | null;
+  isLogged: boolean;
+}
+
+const loginRecord = inject<LoginRecord>('loginRecord',defaultLoginRecord)
+if(loginRecord?.isLogged === false){
+  alert('请先登录！')
+  router.push({name:'HomePage'});
+}
 </script>
 
 <style lang="less" scoped>

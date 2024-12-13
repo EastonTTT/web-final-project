@@ -1,3 +1,5 @@
+<!-- 发布课程 -->
+
 <template>
   <div class="container">
     <h1 class="title">发布新课程</h1>
@@ -72,8 +74,10 @@
 <script lang="ts">
 import { ref } from 'vue'
 import axiosInstance from '@/utils/request/Axios.ts';
-import { LoginRecord } from '../homePage/login/LoginRecord';
+import { getLoginRecord } from '../homePage/login/LoginRecord';
+import { getLineAndCharacterOfPosition } from 'typescript';
 
+const loginRecord = getLoginRecord();
 export default {
   setup(){
     const form = ref({
@@ -99,7 +103,7 @@ export default {
 
     const handleSubmit = async () => {
       const courseData = {
-        teacher_id: LoginRecord.user_id,
+        teacher_id: loginRecord.user_id,
         course_name: form.value.course_name,
         course_description: form.value.course_description,
         course_image: form.value.course_image,

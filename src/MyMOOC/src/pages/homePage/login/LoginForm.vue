@@ -25,18 +25,31 @@
     </t-form>
   </div>
 </template>
+
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { inject, reactive } from 'vue';
 import { MessagePlugin, FormProps, type FormRule } from 'tdesign-vue-next';
 import { DesktopIcon, LockOnIcon } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
 // import { defineEmits } from 'vue';
-import { LogStatus } from '@/pages/homePage/login/LogStatus';
-import { LoginRecord } from '@/pages/homePage/login/LoginRecord';
+// import { LogStatus } from '@/pages/homePage/login/LogStatus';
+import { setLoginRecord } from '@/pages/homePage/login/LoginRecord';
 import MyAxios from '@/utils/request/Axios.ts';
 
 const router = useRouter()
 const emit = defineEmits(['close-dialog']);
+
+// 定义接口
+interface LoginRecord {
+  user_id: number | null;
+  username: string | null;
+  role: number | null;
+  isLogged: boolean;
+}
+
+const loginRecord = inject<LoginRecord>('loginRecord')
+console.log('from loginform:')
+// console.log(loginRecord)
 
 //登录表单内置校验方法:
 const rules: FormProps['rules'] = {
@@ -91,8 +104,6 @@ const onReset: FormProps['onReset'] = () => {
 };
 
 const onSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-
-
   if (validateResult === true) {
     try{
       const response = await MyAxios.myPosting('/login',
@@ -103,10 +114,18 @@ const onSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) =
         if(response.data.status === 200){
           MessagePlugin.success('登录成功')
           emit('close-dialog');
-          LogStatus.isLogged = true;
-          LoginRecord.user_id = response.data.data.user_id;
-          LoginRecord.username = response.data.data.username;
-          LoginRecord.role = response.data.data.role;
+          // LogStatus.isLogged = true;
+          const userData = {
+            user_id: response.data.data.user_id,
+            username: response.data.data.username,
+            role: response.data.data.role,
+          }
+            loginRecord.isLogged = true
+            loginRecord.user_id = response.data.data.user_id;
+            loginRecord.username = response.data.data.username;
+            loginRecord.role = response.data.data.role;
+            console.log(loginRecord);
+          setLoginRecord(userData);
         }else{
           MessagePlugin.error('登陆失败：' + response.data.message)
         }
