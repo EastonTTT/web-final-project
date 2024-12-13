@@ -21,7 +21,7 @@ public interface CourseMapper {
     CourseDTO getCourseById(@Param("courseId") Integer courseId);
 
     // 获取所有课程信息
-    @Select("SELECT * FROM courses")
+    @Select("SELECT * FROM webfinal.courses")
     List<CourseDTO> getAllCourses();
 
     // 更新课程信息
