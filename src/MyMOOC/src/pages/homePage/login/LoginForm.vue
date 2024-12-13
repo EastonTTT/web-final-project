@@ -104,6 +104,7 @@ const onSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) =
           MessagePlugin.success('登录成功')
           emit('close-dialog');
           LogStatus.isLogged = true;
+          LoginRecord.user_id = response.data.data.user_id;
           LoginRecord.username = response.data.data.username;
           LoginRecord.role = response.data.data.role;
         }else{

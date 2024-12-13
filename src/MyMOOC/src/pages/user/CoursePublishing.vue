@@ -1,176 +1,241 @@
 <template>
-  <div>
-    <h3>课程发布</h3>
-    <el-form :model="course" label-width="120px">
-      <el-form-item label="课程名称">
-        <el-input v-model="course.name" placeholder="请输入课程名称"></el-input>
-      </el-form-item>
-
-      <el-form-item label="课程简介">
-        <el-input
-          type="textarea"
-          v-model="course.description"
-          placeholder="请输入课程简介"
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item label="轮播图">
-        <el-upload
-          class="upload-demo"
-          action="#"
-          :auto-upload="false"
-          :file-list="carouselImages"
-          multiple
-          :on-change="handleCarouselChange"
-        >
-          <el-button type="primary">上传轮播图</el-button>
-        </el-upload>
-        <el-button type="success" @click="submitCarousel">提交轮播图</el-button>
-        <el-draggable v-model="carouselImages" handle=".drag-handle">
-          <div
-            v-for="(item, index) in carouselImages"
-            :key="item.uid"
-            class="carousel-item"
-          >
-            <span class="drag-handle">::</span>
-            <img :src="item.url" alt="轮播图" class="carousel-img" />
-          </div>
-        </el-draggable>
-      </el-form-item>
-
-      <el-form-item label="是否开启评论区">
-        <el-switch v-model="course.commentsEnabled" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-
-      <el-form-item label="是否开启笔记区">
-        <el-switch v-model="course.notesEnabled" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="previewCourse">预览课程</el-button>
-        <el-button type="success" @click="publishCourse">发布课程</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-dialog :visible.sync="previewVisible" title="课程预览">
-      <p><strong>课程名称：</strong>{{ course.name }}</p>
-      <p><strong>课程简介：</strong>{{ course.description }}</p>
-      <p><strong>轮播图：</strong></p>
-      <div class="preview-carousel">
-        <img v-for="(img, index) in carouselImages" :key="index" :src="img.url" alt="轮播图" />
+  <div class="container">
+    <h1 class="title">发布新课程</h1>
+    <form class="form" @submit.prevent="handleSubmit">
+      <div class="form-group">
+        <label>课程名称 <span class="required">*</span>：</label>
+        <input v-model="form.course_name" type="text" required />
       </div>
-      <p><strong>评论区：</strong>{{ course.commentsEnabled ? '开启' : '关闭' }}</p>
-      <p><strong>笔记区：</strong>{{ course.notesEnabled ? '开启' : '关闭' }}</p>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="previewVisible = false">关闭</el-button>
-      </span>
-    </el-dialog>
+
+      <div class="form-group">
+        <label>课程简介 <span class="required">*</span>：</label>
+        <textarea v-model="form.course_description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>课程图片 <span class="required">*</span>：</label>
+        <input type="file" @change="handleFileChange" accept="image/*" required />
+      </div>
+
+      <div class="form-group">
+        <label>课程类型 <span class="required">*</span>：</label>
+        <select v-model="form.course_type" required>
+          <option value="理学·工学">理学·工学</option>
+          <option value="计算机">计算机</option>
+          <option value="教育·语言">教育·语言</option>
+          <option value="文学·艺术">文学·艺术</option>
+          <option value="创业·职场">创业·职场</option>
+          <option value="哲史·文化">哲史·文化</option>
+          <option value="经济·管理">经济·管理</option>
+          <option value="医学">医学</option>
+          <option value="心理学">心理学</option>
+          <option value="社会·法律">社会·法律</option>
+          <option value="农学">农学</option>
+        </select>
+      </div>
+
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <label>开启评论区 <span class="required">*</span>：</label>
+          <input type="checkbox" v-model="form.allow_comments" />
+        </div>
+        <div class="checkbox-item">
+          <label>开启笔记区 <span class="required">*</span>：</label>
+          <input type="checkbox" v-model="form.allow_notes" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>课程状态 <span class="required">*</span>：</label>
+        <select v-model="form.status" required>
+          <option value="未开课">未开课</option>
+          <option value="已开课">已开课</option>
+          <option value="已结束">已结束</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>课程开始时间 <span class="required">*</span>：</label>
+        <input type="datetime-local" v-model="form.start_time" required/>
+      </div>
+
+      <div class="form-group">
+        <label>课程结束时间 <span class="required">*</span>：</label>
+        <input type="datetime-local" v-model="form.end_time" required/>
+      </div>
+
+      <button type="submit" class="submit-btn">发布课程</button>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { ElForm, ElFormItem, ElInput, ElUpload, ElButton, ElSwitch, ElDialog, ElMessage } from 'element-plus';
-import draggable from 'vuedraggable';
+import { ref } from 'vue'
+import axiosInstance from '@/utils/request/Axios.ts';
+import { LoginRecord } from '../homePage/login/LoginRecord';
 
-export default defineComponent({
-  name: 'CoursePublishing',
-  components: {
-    ElForm,
-    ElFormItem,
-    ElInput,
-    ElUpload,
-    ElButton,
-    ElSwitch,
-    ElDialog,
-    draggable,
-  },
-  setup() {
-    const course = ref({
-      name: '',
-      description: '',
-      commentsEnabled: true,
-      notesEnabled: true,
+export default {
+  setup(){
+    const form = ref({
+      course_name: '',
+      course_description: '',
+      course_image: '', // 最终只存文件相对路径，如：asset/image/filename.png
+      course_type: '计算机',
+      allow_comments: false,
+      allow_notes: false,
+      status: '未开课', // 默认状态为未开课
+      start_time: '',
+      end_time: ''
     });
 
-    const carouselImages = ref<any[]>([]);
-    const previewVisible = ref(false);
-
-    const handleCarouselChange = (file: any, fileList: any[]) => {
-      carouselImages.value = fileList;
-    };
-
-    const submitCarousel = () => {
-      if (carouselImages.value.length === 0) {
-        ElMessage.warning('请先选择要上传的轮播图');
-        return;
+    const handleFileChange = (event: Event) => {
+      const input = event.target as HTMLInputElement;
+      if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        const fileName = file.name;
+        form.value.course_image = `course/${fileName}`;
       }
-      // 模拟上传过程
-      setTimeout(() => {
-        ElMessage.success('轮播图上传成功');
-      }, 1000);
-    };
+    }
 
-    const previewCourse = () => {
-      if (!course.value.name) {
-        ElMessage.warning('请填写课程名称');
-        return;
-      }
-      previewVisible.value = true;
-    };
+    const handleSubmit = async () => {
+      const courseData = {
+        teacher_id: LoginRecord.user_id,
+        course_name: form.value.course_name,
+        course_description: form.value.course_description,
+        course_image: form.value.course_image,
+        course_type: form.value.course_type,
+        allow_comments: form.value.allow_comments,
+        allow_notes: form.value.allow_notes,
+        status: form.value.status,
+        start_time: form.value.start_time ? new Date(form.value.start_time) : null,
+        end_time: form.value.end_time ? new Date(form.value.end_time) : null,
+      };
+      const response = await axiosInstance.myPosting('/courses/action?action=add', courseData);
 
-    const publishCourse = () => {
-      if (!course.value.name || !course.value.description) {
-        ElMessage.warning('请填写完整的课程信息');
-        return;
+      if(response.status === 200 && response.data.status === 200){
+        alert(response.data.message);
+        location.reload();
+      } else {
+        alert('发布失败：' + response.data.message);
       }
-      // 模拟发布过程
-      setTimeout(() => {
-        ElMessage.success('课程发布成功');
-        // 清空表单
-        course.value.name = '';
-        course.value.description = '';
-        carouselImages.value = [];
-        course.value.commentsEnabled = true;
-        course.value.notesEnabled = true;
-      }, 1000);
-    };
+    }
 
     return {
-      course,
-      carouselImages,
-      previewVisible,
-      handleCarouselChange,
-      submitCarousel,
-      previewCourse,
-      publishCourse,
-    };
-  },
-});
+      form,
+      handleSubmit,
+      handleFileChange
+    }
+  }
+}
 </script>
 
 <style scoped>
-.carousel-item {
+.container {
+  max-width: 650px;
+  margin: 60px auto;
+  padding: 30px 40px;
+  background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  font-family: "Microsoft Yahei", sans-serif;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.checkbox-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkbox-item {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 }
 
-.drag-handle {
-  cursor: move;
+.checkbox-item label {
   margin-right: 10px;
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 0;
 }
 
-.carousel-img {
-  width: 100px;
-  height: 60px;
-  object-fit: cover;
+.required {
+  color: red;
+  margin-left: 5px;
+  font-size: 14px;
 }
 
-.preview-carousel img {
-  width: 150px;
-  height: 90px;
-  object-fit: cover;
-  margin-right: 10px;
+label {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+input,
+textarea,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s;
+  font-family: inherit;
+  background: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #409eff;
+  box-shadow: 0 0 5px rgba(64,158,255,0.3);
+}
+
+.submit-btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: #409eff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #337ecc;
+}
+
+.submit-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
 }
 </style>

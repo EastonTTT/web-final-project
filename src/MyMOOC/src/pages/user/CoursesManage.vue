@@ -2,11 +2,11 @@
   <div>
     <h2>课程管理</h2>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="课件管理" name="courseware">
-        <CourseManagement />
-      </el-tab-pane>
       <el-tab-pane label="课程发布" name="coursePublishing">
         <CoursePublishing />
+      </el-tab-pane>
+      <el-tab-pane label="课件管理" name="courseware">
+        <CourseManagement />
       </el-tab-pane>
       <el-tab-pane label="已发布课程" name="publishedCourses">
         <PublishedCourses />
@@ -29,7 +29,7 @@ export default defineComponent({
     CoursePublishing,
   },
   setup() {
-    const activeTab = ref('courseware');
+    const activeTab = ref('coursePublishing');
 
     const handleTabClick = (tab: any) => {
       // 处理标签点击事件（如果需要）
