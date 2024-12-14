@@ -1,5 +1,3 @@
-<!-- 发布课程 -->
-
 <template>
   <div class="container">
     <h1 class="title">发布新课程</h1>
@@ -16,7 +14,18 @@
 
       <div class="form-group">
         <label>课程图片 <span class="required">*</span>：</label>
-        <input type="file" @change="handleFileChange" accept="image/*" required />
+        <input
+          type="file"
+          @change="handleFileChange"
+          accept="image/*"
+          required
+          ref="fileInput"
+        />
+        <!-- 显示预览和删除按钮 -->
+        <div v-if="form.course_image" class="image-preview">
+          <img :src="imagePreview" alt="课程图片预览" />
+          <button type="button" @click="removeImage" class="delete-btn">删除图片</button>
+        </div>
       </div>
 
       <div class="form-group">
@@ -66,24 +75,72 @@
         <input type="datetime-local" v-model="form.end_time" required/>
       </div>
 
-      <button type="submit" class="submit-btn">发布课程</button>
+      <div class="button-group">
+        <button type="button" class="preview-btn" @click="showPreview">预览</button>
+        <button type="submit" class="submit-btn">发布课程</button>
+      </div>
     </form>
+
+    <!-- 预览模态窗口 -->
+    <div v-if="isPreviewVisible" class="modal-overlay" @click.self="closePreview">
+      <div class="modal-content">
+        <h2>课程预览</h2>
+        <div class="preview-section">
+          <strong>课程名称：</strong> {{ form.course_name || '未填写' }}
+        </div>
+        <div class="preview-section">
+          <strong>课程简介：</strong>
+          <p>{{ form.course_description || '未填写' }}</p>
+        </div>
+        <div class="preview-section">
+          <strong>课程类型：</strong> {{ form.course_type }}
+        </div>
+        <div class="preview-section">
+          <strong>课程状态：</strong> {{ form.status }}
+        </div>
+        <div class="preview-section">
+          <strong>课程开始时间：</strong>
+          {{ form.start_time ? formatDate(form.start_time) : '未填写' }}
+        </div>
+        <div class="preview-section">
+          <strong>课程结束时间：</strong>
+          {{ form.end_time ? formatDate(form.end_time) : '未填写' }}
+        </div>
+        <div class="preview-section">
+          <strong>开启评论区：</strong> {{ form.allow_comments ? '是' : '否' }}
+        </div>
+        <div class="preview-section">
+          <strong>开启笔记区：</strong> {{ form.allow_notes ? '是' : '否' }}
+        </div>
+        <div class="preview-section">
+          <strong>课程图片：</strong>
+          <img v-if="imagePreview" :src="imagePreview" alt="课程图片预览" class="preview-image" />
+          <span v-else>未上传图片</span>
+        </div>
+        <div class="modal-buttons">
+          <button type="button" @click="closePreview" class="close-btn">关闭</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue';
 import axiosInstance from '@/utils/request/Axios.ts';
 import { getLoginRecord } from '../homePage/login/LoginRecord';
-import { getLineAndCharacterOfPosition } from 'typescript';
 
 const loginRecord = getLoginRecord();
+
 export default {
-  setup(){
+  setup() {
+    const fileInput = ref<HTMLInputElement | null>(null); // 引用文件输入
+
     const form = ref({
       course_name: '',
       course_description: '',
       course_image: '', // 最终只存文件相对路径，如：asset/image/filename.png
+      course_imageFile: null as File | null, // 存储文件对象
       course_type: '计算机',
       allow_comments: false,
       allow_notes: false,
@@ -92,14 +149,43 @@ export default {
       end_time: ''
     });
 
+    const isPreviewVisible = ref(false); // 控制预览模态窗口
+
+    const imagePreview = computed(() => {
+      return form.value.course_imageFile
+        ? URL.createObjectURL(form.value.course_imageFile)
+        : '';
+    });
+
     const handleFileChange = (event: Event) => {
       const input = event.target as HTMLInputElement;
       if (input.files && input.files.length > 0) {
         const file = input.files[0];
-        const fileName = file.name;
-        form.value.course_image = `course/${fileName}`;
+        form.value.course_imageFile = file; // 存储文件对象
+        form.value.course_image = `course\${file.name}`;
       }
-    }
+    };
+
+    const removeImage = () => {
+      form.value.course_image = '';
+      form.value.course_imageFile = null;
+      if (fileInput.value) {
+        fileInput.value.value = ''; // 重置文件输入
+      }
+    };
+
+    const showPreview = () => {
+      isPreviewVisible.value = true;
+    };
+
+    const closePreview = () => {
+      isPreviewVisible.value = false;
+    };
+
+    const formatDate = (datetime: string) => {
+      const date = new Date(datetime);
+      return date.toLocaleString(); // 可根据需要自定义格式
+    };
 
     const handleSubmit = async () => {
       const courseData = {
@@ -114,23 +200,41 @@ export default {
         start_time: form.value.start_time ? new Date(form.value.start_time) : null,
         end_time: form.value.end_time ? new Date(form.value.end_time) : null,
       };
+
+      // 如果需要上传文件，可以在这里处理
+      // 例如，使用 FormData 上传图片
+      // const formData = new FormData();
+      // formData.append('teacher_id', loginRecord.user_id);
+      // formData.append('course_name', form.value.course_name);
+      // formData.append('course_description', form.value.course_description);
+      // formData.append('course_image', form.value.course_imageFile as Blob);
+      // ... 其他字段
+      // const response = await axiosInstance.post('/courses/action?action=add', formData);
+
       const response = await axiosInstance.myPosting('/courses/action?action=add', courseData);
 
-      if(response.status === 200 && response.data.status === 200){
+      if (response.status === 200 && response.data.status === 200) {
         alert(response.data.message);
         location.reload();
       } else {
         alert('发布失败：' + response.data.message);
       }
-    }
+    };
 
     return {
       form,
       handleSubmit,
-      handleFileChange
-    }
+      handleFileChange,
+      removeImage,
+      imagePreview,
+      fileInput,
+      isPreviewVisible,
+      showPreview,
+      closePreview,
+      formatDate
+    };
   }
-}
+};
 </script>
 
 <style scoped>
@@ -221,6 +325,28 @@ select:focus {
   box-shadow: 0 0 5px rgba(64,158,255,0.3);
 }
 
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.preview-btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: #67c23a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.preview-btn:hover {
+  background: #5da13d;
+}
+
 .submit-btn {
   padding: 12px 20px;
   font-size: 16px;
@@ -230,7 +356,6 @@ select:focus {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  align-self: flex-end;
   transition: background 0.3s;
 }
 
@@ -241,5 +366,111 @@ select:focus {
 .submit-btn:disabled {
   background: #cccccc;
   cursor: not-allowed;
+}
+
+/* 新增样式 */
+
+.image-preview {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.image-preview img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.delete-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #ff4d4f;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #d9363e;
+}
+
+/* 模态窗口样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.preview-section {
+  margin-bottom: 15px;
+}
+
+.preview-section strong {
+  display: inline-block;
+  width: 150px;
+  color: #555;
+}
+
+.preview-section p {
+  display: inline-block;
+  margin: 0;
+  color: #333;
+}
+
+.preview-image {
+  max-width: 200px;
+  max-height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.close-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #909399;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+  background-color: #7d7d7d;
 }
 </style>

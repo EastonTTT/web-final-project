@@ -64,7 +64,7 @@ public class CourseController {
                     System.out.println("teacherId: " + courseDTO.getTeacher_id());
                     courseService.addCourse(courseDTO);
 
-                    return Result.success("课程添加成功");
+                    return Result.success("课程发布成功");
 
                 case "update":
                     // 更新课程需要courseId为必传值
