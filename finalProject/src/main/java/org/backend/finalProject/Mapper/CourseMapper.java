@@ -18,7 +18,11 @@ public interface CourseMapper {
 
     // 根据课程ID获取课程信息
     @Select("SELECT * FROM webfinal.courses WHERE course_id = #{course_id}")
-    CourseDTO getCourseById(@Param("course_id") Integer courseId);
+    CourseDTO getCourseByCourseId(@Param("course_id") Integer courseId);
+
+    // 根据课程ID获取课程信息
+    @Select("SELECT * FROM webfinal.courses WHERE teacher_id = #{teacher_id}")
+    List<CourseDTO> getCoursesByTeacherId(@Param("teacher_id") Integer teacherID);
 
     // 获取所有课程信息
     @Select("SELECT * FROM webfinal.courses")

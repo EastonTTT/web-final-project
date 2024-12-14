@@ -183,7 +183,9 @@
 <script lang="ts">
 import { ref, onMounted } from 'vue';
 import axiosInstance from '@/utils/request/Axios.ts';
+import { getLoginRecord } from '../homePage/login/LoginRecord';
 
+const loginRecord = getLoginRecord();
 // 定义 TypeScript 接口
 interface Assignment {
   assignment_id: number;
@@ -266,11 +268,12 @@ export default {
     // Reference to the modify file input
     const modifyFileInput = ref<HTMLInputElement | null>(null);
 
-    // 获取所有已发布课程
+    // 根据老师id获取该老师发布的课程
     const fetchCourses = async () => {
       loading.value = true;
       try {
-        const response = await axiosInstance.get('/courses');
+        const teacherID = loginRecord.user_id;
+        const response = await axiosInstance.get(`/courses/teacher/${teacherID}`);
         if (response.status === 200 && response.data.status === 200) {
           courses.value = response.data.data;
           // 为每个课程获取其作业列表

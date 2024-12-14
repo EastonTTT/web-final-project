@@ -21,8 +21,13 @@ public class CourseService {
     }
 
     // 根据课程ID获取课程
-    public CourseDTO getCourseById(Integer courseId) {
-        return courseMapper.getCourseById(courseId);
+    public CourseDTO getCourseByCourseId(Integer courseId) {
+        return courseMapper.getCourseByCourseId(courseId);
+    }
+
+    // 根据教师ID获取课程
+    public List<CourseDTO> getCoursesByTeacherId(Integer courseId) {
+        return courseMapper.getCoursesByTeacherId(courseId);
     }
 
     // 获取所有课程

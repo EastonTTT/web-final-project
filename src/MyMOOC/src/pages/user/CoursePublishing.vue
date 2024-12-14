@@ -162,7 +162,7 @@ export default {
       if (input.files && input.files.length > 0) {
         const file = input.files[0];
         form.value.course_imageFile = file; // 存储文件对象
-        form.value.course_image = `course\${file.name}`;
+        form.value.course_image = `course/${file.name}`;
       }
     };
 
