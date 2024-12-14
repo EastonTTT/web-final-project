@@ -197,8 +197,8 @@ export default {
         allow_comments: form.value.allow_comments,
         allow_notes: form.value.allow_notes,
         status: form.value.status,
-        start_time: form.value.start_time ? new Date(form.value.start_time) : null,
-        end_time: form.value.end_time ? new Date(form.value.end_time) : null,
+        start_time: form.value.start_time ? form.value.start_time : null,
+        end_time: form.value.end_time ? form.value.end_time : null,
       };
 
       // 如果需要上传文件，可以在这里处理

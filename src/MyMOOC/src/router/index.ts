@@ -1,5 +1,6 @@
 import HomePage from '@/pages/homePage/index.vue'
 import CoursePage from '@/pages/coursePage/index.vue'
+import CourseDetail from '@/pages/coursePage/CourseDetail.vue'
 import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
@@ -29,6 +30,12 @@ const router = createRouter({
           path:'/courses',
           name:'coursesAll',
           component:CoursePage
+        },
+        {
+          path: '/courses/:courseId',
+          name: 'CourseDetail',
+          component: CourseDetail,
+          props: true
         },
         {
           path:'/user',
