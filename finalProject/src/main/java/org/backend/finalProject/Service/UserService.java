@@ -27,12 +27,13 @@ public class UserService {
         try{
             userMapper.insertUser(user);
             return true;
-        }catch (Exception e){
+        }catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
         }
-
-
     }
 
+    public String selectUsernameById(Integer user_id) {
+        return userMapper.selectUsernameById(user_id);
+    }
 }

@@ -5,9 +5,7 @@ import org.backend.finalProject.Pojo.Result;
 import org.backend.finalProject.Pojo.UserDTO;
 import org.backend.finalProject.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.backend.finalProject.Pojo.LoginResponseDTO;
 @RestController
 
@@ -36,4 +34,15 @@ public class loginController {
             return Result.failed("用户已存在");
         }
     }
+
+    @GetMapping("/username/{userId}")
+    public Result<String> getUsernameById(@PathVariable("userId") Integer userId){
+        String username = userService.selectUsernameById(userId);
+        if(username != null){
+            return Result.success(username);
+        } else {
+            return Result.failed("用户不存在");
+        }
+    }
+
 }
