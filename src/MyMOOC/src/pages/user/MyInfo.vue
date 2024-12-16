@@ -14,8 +14,8 @@
       style="margin: 20px 10px;"
     >
       <!-- !!!注意：当 FormItem 的 label 属性为 Function 时，errorMessage 模板中的 ${name} 会被替换为 FormItem.name 属性值 -->
-      <t-form-item :label="renderLabel" name="account" style="width: 400px;">
-        <t-input v-model="formData.account"></t-input>
+      <t-form-item label="用户名" name="account" style="width: 400px;">
+        <t-input v-model="formData.account" disabled></t-input>
       </t-form-item>
 
       <t-form-item label="密码" name="password">
@@ -26,12 +26,12 @@
         <t-auto-complete v-model="formData.email" :options="emailOptions" filterable></t-auto-complete>
       </t-form-item>
 
-      <t-form-item label="性别" name="gender">
+      <!-- <t-form-item label="性别" name="gender">
         <t-radio-group v-model="formData.gender">
           <t-radio value="male">男</t-radio>
           <t-radio value="femal">女</t-radio>
         </t-radio-group>
-      </t-form-item>
+      </t-form-item> -->
 
       <t-form-item
         label="入学时间"
@@ -51,7 +51,8 @@
   </t-space>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, inject } from 'vue';
+import MyAxios from '@/utils/request/Axios';
 import {
   MessagePlugin,
   FormProps,
@@ -61,6 +62,21 @@ import {
   FormItemProps,
   ButtonProps,
 } from 'tdesign-vue-next';
+import { log } from 'console';
+
+interface LoginRecord {
+  user_id: number | null;
+  username: string | null;
+  role: number | null;
+  isLogged: boolean;
+}
+
+const loginRecord = inject<LoginRecord>('loginRecord')
+console.log(loginRecord);
+
+//查询个人信息
+getMyInfo();
+
 const formData: FormProps['data'] = reactive({
   account: '',
   password: '',
@@ -88,7 +104,6 @@ const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
     MessagePlugin.warning(firstError);
   }
 };
-const renderLabel: FormItemProps['label'] = () => '用户名';
 
 const rules: FormProps['rules'] = {
   account: [
@@ -102,16 +117,6 @@ const rules: FormProps['rules'] = {
     {
       max: 10,
       type: 'warning',
-    },
-  ],
-  description: [
-    {
-      validator: (val) => val.length >= 3,
-      message: '太短啦'
-    },
-    {
-      validator: (val) => val.length < 10,
-      message: '不能超过 20 个字，中文长度等于英文长度',
     },
   ],
   password: [
@@ -137,34 +142,32 @@ const rules: FormProps['rules'] = {
       },
     },
   ],
-  gender: [
-    {
-      required: true,
-    },
-  ],
-  course: [
-    {
-      required: true,
-    },
-    {
-      validator: (val) => val.length <= 2,
-      message: '最多选择 2 门课程',
-      type: 'warning',
-    },
-  ],
-  'content.url': [
-    {
-      required: true,
-    },
-    {
-      url: {
-        protocols: ['http', 'https', 'ftp'],
-        require_protocol: true,
-      },
-    },
-  ],
 };
 
+async function getMyInfo(){
+  try{
+      const response = await MyAxios.myGetting(`user/${loginRecord.user_id}`);
+        if(response.status === 200){
+          MessagePlugin.success('加载个人信息成功')
+          formData.account = response.data.username;
+          formData.password = response.data.password;
+          if (response.data.updated_at) {
+            const date = new Date(response.data.created_at);
+            const formattedDate = date.toLocaleDateString(); // 格式化为 'YYYY/MM/DD' 格式
+            formData.date = formattedDate;
+          }
+          if(response.data.email){
+            formData.email = response.data.email;
+          }
+        }else{
+          MessagePlugin.error('查询个人信息：' + response.message)
+          // console.log(response);
+        }
+    }catch(error){
+      console.log('查询个人信息请求失败',error)
+      MessagePlugin.error('查询个人信息请求失败')
+    }
+  }
 </script>
 
 <style scoped>

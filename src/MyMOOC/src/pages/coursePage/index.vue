@@ -41,7 +41,7 @@ const loading = ref(true)
 const error = ref(null)
 
 const fetchCourses = async () => {
-  const result = await axiosInstance.testGetting('/courses')
+  const result = await axiosInstance.myGetting('/courses')
   if (result.status === 200) {
     courses.value = result.data
   } else {

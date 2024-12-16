@@ -38,7 +38,7 @@ const router = useRouter();
 const result = ref();
 
 async function handleClick() {
-  result.value = await axiosInstance.testGetting('/home');
+  result.value = await axiosInstance.myGetting('/home');
   console.log('the result of .. is', result.value)
 }
 

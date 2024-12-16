@@ -22,7 +22,6 @@
 <script lang="ts" setup>
 
 import { ref } from 'vue';
-import ImageGallery from '../ImageGallery.vue';
 
 const images = ref([
       { id: 1, url: 'http://localhost:5173/src/assets/uooc.png' },
