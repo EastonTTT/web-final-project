@@ -70,5 +70,20 @@ public class AssignmentSubmissionController {
     @PostMapping("/grade")
     public Result<?> gradeSubmission(@RequestParam Integer submission_id, @RequestParam Float grade, @RequestParam String feedback) {
         return submissionService.gradeSubmission(submission_id, grade, feedback);
+
+    }
+
+    /**
+     * 获取特定作业的所有提交记录
+     * GET /assignment-submissions/assignment/{assignmentId}
+     */
+    @GetMapping("/assignment/{assignmentId}")
+    public Result<List<AssignmentSubmissionDTO>> getSubmissionsByAssignmentId(@PathVariable Integer assignmentId) {
+        try {
+            List<AssignmentSubmissionDTO> submissions = submissionService.getSubmissionsByAssignmentId(assignmentId);
+            return Result.success(submissions);
+        } catch (Exception e) {
+            return Result.failed("获取作业提交记录失败: " + e.getMessage());
+        }
     }
 }

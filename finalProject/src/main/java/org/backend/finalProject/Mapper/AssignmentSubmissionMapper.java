@@ -41,4 +41,14 @@ public interface AssignmentSubmissionMapper {
     @Update("UPDATE webfinal.assignment_submissions SET text_content = #{text_content}, content_url = #{content_url}, submit_time = NOW() WHERE submission_id = #{submission_id} AND student_id = #{student_id}")
     void updateSubmission(@Param("submission_id") Integer submissionId, @Param("student_id") Integer studentId,
                           @Param("text_content") String textContent, @Param("content_url") String contentUrl);
+
+    /**
+     * 根据作业ID获取所有提交记录
+     *
+     * @param assignmentId 作业ID
+     * @return 提交记录列表
+     */
+    @Select("SELECT * FROM webfinal.assignment_submissions WHERE assignment_id = #{assignmentId}")
+    List<AssignmentSubmissionDTO> getSubmissionsByAssignmentId(@Param("assignmentId") Integer assignmentId);
+
 }

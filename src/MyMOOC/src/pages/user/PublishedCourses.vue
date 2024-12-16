@@ -32,20 +32,6 @@
               <button class="btn delete-btn" @click="deleteCourse(course)">删除课程</button>
               <button class="btn assign-btn" @click="openAssignModal(course)">布置作业</button>
             </div>
-
-            <!-- 作业列表 -->
-            <div class="assignments" v-if="course.assignments && course.assignments.length > 0">
-              <h3>作业列表</h3>
-              <div v-for="assignment in course.assignments" :key="assignment.assignment_id" class="assignment-item">
-                <h4>{{ assignment.title }}</h4>
-                <p>{{ assignment.description }}</p>
-                <p><strong>截止日期:</strong> {{ formatDate(assignment.due_date) }}</p>
-                <div class="assignment-buttons">
-                  <button class="btn modify-btn" @click="openModifyAssignmentModal(course, assignment)">修改作业</button>
-                  <button class="btn delete-btn" @click="deleteAssignment(course, assignment)">删除作业</button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -152,31 +138,6 @@
         </form>
       </div>
     </div>
-
-    <!-- 修改作业模态窗口 -->
-    <div v-if="isModifyAssignmentModalVisible" class="modal-overlay" @click.self="closeModifyAssignmentModal">
-      <div class="modal-content">
-        <h2>修改作业 - {{ currentAssignment.title }}</h2>
-        <form @submit.prevent="submitAssignmentModification">
-          <div class="form-group">
-            <label>作业标题 <span class="required">*</span>：</label>
-            <input v-model="currentAssignment.title" type="text" required />
-          </div>
-          <div class="form-group">
-            <label>作业描述：</label>
-            <textarea v-model="currentAssignment.description"></textarea>
-          </div>
-          <div class="form-group">
-            <label>截止日期 <span class="required">*</span>：</label>
-            <input type="datetime-local" v-model="currentAssignment.due_date" required/>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn cancel-btn" @click="closeModifyAssignmentModal">取消</button>
-            <button type="submit" class="btn submit-btn">保存修改</button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -186,6 +147,7 @@ import axiosInstance from '@/utils/request/Axios.ts';
 import { getLoginRecord } from '../homePage/login/LoginRecord';
 
 const loginRecord = getLoginRecord();
+
 // 定义 TypeScript 接口
 interface Assignment {
   assignment_id: number;
@@ -209,7 +171,16 @@ interface Course {
   status: string;
   start_time: string; // 使用字符串存储日期时间
   end_time: string; // 使用字符串存储日期时间
-  assignments: Assignment[]; // 作业列表
+}
+
+interface NewAssignment {
+  assignment_id: number;
+  course_id: number;
+  title: string;
+  description: string;
+  due_date: string;
+  create_at: string;
+  updated_at: string;
 }
 
 export default {
@@ -222,7 +193,6 @@ export default {
     // 模态窗口的显示状态
     const isModifyModalVisible = ref<boolean>(false);
     const isAssignModalVisible = ref<boolean>(false);
-    const isModifyAssignmentModalVisible = ref<boolean>(false);
 
     // 当前操作的课程
     const currentCourse = ref<Course>({
@@ -236,23 +206,11 @@ export default {
       allow_notes: false,
       status: '',
       start_time: '',
-      end_time: '',
-      assignments: []
+      end_time: ''
     });
 
     // 新建作业的数据
-    const newAssignment = ref<Assignment>({
-      assignment_id: 0,
-      course_id: 0,
-      title: '',
-      description: '',
-      due_date: '',
-      create_at: '',
-      updated_at: ''
-    });
-
-    // 当前修改的作业
-    const currentAssignment = ref<Assignment>({
+    const newAssignment = ref<NewAssignment>({
       assignment_id: 0,
       course_id: 0,
       title: '',
@@ -276,15 +234,6 @@ export default {
         const response = await axiosInstance.get(`/courses/teacher/${teacherID}`);
         if (response.status === 200 && response.data.status === 200) {
           courses.value = response.data.data;
-          // 为每个课程获取其作业列表
-          for (let course of courses.value) {
-            const assignmentResponse = await axiosInstance.get(`/assignments/course/${course.course_id}`);
-            if (assignmentResponse.status === 200 && assignmentResponse.data.status === 200) {
-              course.assignments = assignmentResponse.data.data;
-            } else {
-              course.assignments = [];
-            }
-          }
         } else {
           alert('获取课程列表失败: ' + response.data.message);
         }
@@ -463,8 +412,7 @@ export default {
           course_id: newAssignment.value.course_id,
           title: newAssignment.value.title,
           description: newAssignment.value.description,
-          // 保持截止日期字符串不变，直接发送
-          due_date: new Date(newAssignment.value.due_date) || ''
+          due_date: newAssignment.value.due_date
         };
         const response = await axiosInstance.myPosting('/assignments/action?action=add', assignmentData);
         if (response.status === 200 && response.data.status === 200) {
@@ -480,68 +428,6 @@ export default {
       }
     };
 
-    // 打开修改作业模态窗口
-    const openModifyAssignmentModal = (course: Course, assignment: Assignment) => {
-      currentCourse.value = { ...course };
-      currentAssignment.value = { ...assignment };
-      isModifyAssignmentModalVisible.value = true;
-    };
-
-    // 关闭修改作业模态窗口
-    const closeModifyAssignmentModal = () => {
-      isModifyAssignmentModalVisible.value = false;
-    };
-
-    // 提交作业修改
-    const submitAssignmentModification = async () => {
-      if (!currentAssignment.value.title || !currentAssignment.value.due_date) {
-        alert('请填写作业标题和截止日期');
-        return;
-      }
-      try {
-        const assignmentData = {
-          action: 'update',
-          assignment_id: currentAssignment.value.assignment_id,
-          course_id: currentAssignment.value.course_id,
-          title: currentAssignment.value.title,
-          description: currentAssignment.value.description,
-          // 保持截止日期字符串不变，直接发送
-          due_date: new Date(currentAssignment.value.due_date) || ''
-        };
-        const response = await axiosInstance.myPosting('/assignments/action?action=update', assignmentData);
-        if (response.status === 200 && response.data.status === 200) {
-          alert(response.data.message);
-          closeModifyAssignmentModal();
-          await fetchCourses();
-        } else {
-          alert('修改作业失败: ' + response.data.message);
-        }
-      } catch (error) {
-        console.error(error);
-        alert('修改作业时发生错误');
-      }
-    };
-
-    // 删除作业
-    const deleteAssignment = async (course: Course, assignment: Assignment) => {
-      if (!confirm(`确定要删除作业 "${assignment.title}" 吗？`)) {
-        return;
-      }
-      try {
-        const response = await axiosInstance.myPosting('/assignments/action?action=delete', { assignment_id: assignment.assignment_id });
-
-        if (response.status === 200 && response.data.status === 200) {
-          alert(response.data.message);
-          await fetchCourses();
-        } else {
-          alert('删除作业失败: ' + response.data.message);
-        }
-      } catch (error) {
-        console.error(error);
-        alert('删除作业时发生错误');
-      }
-    };
-
     // 在组件挂载时获取课程列表
     onMounted(async () => {
       await fetchCourses();
@@ -552,10 +438,8 @@ export default {
       loading,
       isModifyModalVisible,
       isAssignModalVisible,
-      isModifyAssignmentModalVisible,
       currentCourse,
       newAssignment,
-      currentAssignment,
       fetchCourses,
       formatDate,
       getImageUrl,
@@ -567,10 +451,6 @@ export default {
       openAssignModal,
       closeAssignModal,
       submitAssignment,
-      openModifyAssignmentModal,
-      closeModifyAssignmentModal,
-      submitAssignmentModification,
-      deleteAssignment,
       modifyImagePreview,
       handleModifyFileChange,
       removeModifyImage,
@@ -681,35 +561,6 @@ export default {
 
 .assign-btn:hover {
   background-color: #27ae60;
-}
-
-.assignments {
-  margin-top: 15px;
-  padding-left: 170px; /* Align with course details */
-}
-
-.assignment-item {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.assignment-item h4 {
-  margin: 0 0 5px 0;
-  color: #34495e;
-}
-
-.assignment-buttons {
-  margin-top: 5px;
-  display: flex;
-  gap: 10px;
-}
-
-.assignment-buttons .btn {
-  padding: 6px 10px;
-  font-size: 13px;
 }
 
 /* 修改课程模态窗口样式 */

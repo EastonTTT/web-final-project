@@ -134,4 +134,15 @@ public class AssignmentSubmissionService {
             return Result.failed("作业打分失败: " + e.getMessage());
         }
     }
+
+    /**
+     * 根据作业ID获取所有提交记录
+     *
+     * @param assignmentId 作业ID
+     * @return 提交记录列表
+     */
+    public List<AssignmentSubmissionDTO> getSubmissionsByAssignmentId(Integer assignmentId) {
+        return submissionMapper.getSubmissionsByAssignmentId(assignmentId);
+    }
+
 }
