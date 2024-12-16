@@ -50,34 +50,40 @@
         <!-- 评论区 -->
         <div v-else-if="currentTab === 'comments'" class="comments-section">
           <!-- 添加评论表单 -->
-          <div class="add-comment">
-            <h2>添加评论</h2>
-            <textarea v-model="newCommentContent" placeholder="请输入您的评论..." rows="4"></textarea>
-            <button @click="addComment" :disabled="!canAddComment">提交评论</button>
-          </div>
+          <div v-if="course.allow_comments">
+            <div class="add-comment">
+              <h2>添加评论</h2>
+              <textarea v-model="newCommentContent" placeholder="请输入您的评论..." rows="4"></textarea>
+              <button @click="addComment" :disabled="!canAddComment">提交评论</button>
+            </div>
 
           <!-- 评论列表 -->
-          <div class="comments-list">
-            <h2>所有评论</h2>
-            <div v-if="comments.length === 0">暂无评论</div>
-            <div v-else>
-              <div v-for="comment in comments" :key="comment.comment_id" class="comment-item">
-                <div class="comment-header">
-                  <img :src="getImageUrl(comment.user_image)" alt="User Avatar" class="user-avatar" />
-                  <span class="username">{{ comment.username }}</span>
-                  <span class="comment-time">{{ formatDate(comment.create_at) }}</span>
-                  <button
-                    v-if="comment.user_id === userInfo.user_id"
-                    class="delete-button"
-                    @click="deleteComment(comment.comment_id)"
-                  >
-                    删除
-                  </button>
+            <div class="comments-list">
+              <h2>所有评论</h2>
+              <div v-if="comments.length === 0">暂无评论</div>
+              <div v-else>
+                <div v-for="comment in comments" :key="comment.comment_id" class="comment-item">
+                  <div class="comment-header">
+                    <img :src="getImageUrl(comment.user_image)" alt="User Avatar" class="user-avatar" />
+                    <span class="username">{{ comment.username }}</span>
+                    <span class="comment-time">{{ formatDate(comment.create_at) }}</span>
+                    <button
+                      v-if="comment.user_id === userInfo.user_id"
+                      class="delete-button"
+                      @click="deleteComment(comment.comment_id)"
+                    >
+                      删除
+                    </button>
+                  </div>
+                  <div class="comment-content">{{ comment.content }}</div>
                 </div>
-                <div class="comment-content">{{ comment.content }}</div>
               </div>
             </div>
           </div>
+
+        <div v-else>
+            <p>该课程暂时不允许评论。</p>
+        </div>
         </div>
       </div>
     </div>
