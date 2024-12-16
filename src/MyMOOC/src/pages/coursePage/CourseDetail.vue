@@ -1,3 +1,4 @@
+<!-- src/components/CourseDetail.vue -->
 <template>
   <div class="course-detail-container">
     <Breadcrumb style="margin: 10px;" />
@@ -38,9 +39,15 @@
         >
           评论区
         </button>
+        <button
+          :class="['tab-button', currentTab === 'notes' ? 'active' : '']"
+          @click="currentTab = 'notes'"
+        >
+          笔记区
+        </button>
       </div>
 
-      <!-- 课程介绍或评论区 -->
+      <!-- 课程介绍、评论区或笔记区 -->
       <div class="tab-content">
         <!-- 课程介绍 -->
         <div v-if="currentTab === 'description'" class="course-description-section">
@@ -57,7 +64,7 @@
               <button @click="addComment" :disabled="!canAddComment">提交评论</button>
             </div>
 
-          <!-- 评论列表 -->
+            <!-- 评论列表 -->
             <div class="comments-list">
               <h2>所有评论</h2>
               <div v-if="comments.length === 0">暂无评论</div>
@@ -81,9 +88,14 @@
             </div>
           </div>
 
-        <div v-else>
+          <div v-else>
             <p>该课程暂时不允许评论。</p>
+          </div>
         </div>
+
+        <!-- 笔记区 -->
+        <div v-else-if="currentTab === 'notes'" class="notes-section-wrapper">
+          <Notes :courseId="course.course_id" :course="course" />
         </div>
       </div>
     </div>
@@ -95,6 +107,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axiosInstance from '@/utils/request/Axios.ts'
 import Breadcrumb from './Breadcrumb.vue'
+import Notes from './Notes.vue'
 import { getLoginRecord } from '../homePage/login/LoginRecord'
 
 // 获取路由参数
@@ -105,7 +118,7 @@ const courseId = route.params.courseId
 const course = ref(null)
 const loading = ref(true)
 const error = ref(null)
-const currentTab = ref('description') // 'description' 或 'comments'
+const currentTab = ref('description') // 'description' 或 'comments' 或 'notes'
 
 // 用户信息
 const userInfo = ref(getLoginRecord())
@@ -121,6 +134,8 @@ const userNamesMap = ref({})
 
 // 获取课程详情
 const fetchCourseDetail = async () => {
+  console.log(userInfo.value.role)
+  console.log(userInfo.value.user_id)
   try {
     const response = await axiosInstance.get(`/courses/course/${courseId}`)
     console.log('API Response:', response) // 调试日志
@@ -142,7 +157,7 @@ const fetchCourseDetail = async () => {
 const fetchComments = async () => {
   try {
     const response = await axiosInstance.get(`/comments/course/${courseId}`)
-    console.log('Fetch Comments Response:', response); // 调试日志
+    console.log('Fetch Comments Response:', response) // 调试日志
 
     if (response.status === 200 && response.data.status === 200) {
       const fetchedComments = response.data.data
@@ -152,14 +167,14 @@ const fetchComments = async () => {
         if (!comment.user_id) {
           // 处理没有 user_id 的评论
           comment.username = '未知用户'
-          comment.user_image = '20241203155134.jpg'
+          comment.user_image = 'default_avatar.jpg'
           continue
         }
 
         if (!userNamesMap.value[comment.user_id]) {
           try {
             const userResponse = await axiosInstance.get(`/username/${comment.user_id}`)
-            console.log(userResponse);
+            console.log(userResponse)
             if (userResponse.status === 200 && userResponse.data.status === 200) {
               userNamesMap.value[comment.user_id] = {
                 username: userResponse.data.message,
@@ -175,7 +190,7 @@ const fetchComments = async () => {
             console.error(`获取用户 ${comment.user_id} 信息时发生错误:`, err.message)
             userNamesMap.value[comment.user_id] = {
               username: '未知用户',
-              user_image: 'http://localhost:5173/src/assets/20241203155134.jpg' // 默认头像
+              user_image: '20241203155134.jpg' // 默认头像
             }
           }
         }
@@ -192,8 +207,6 @@ const fetchComments = async () => {
     console.error('获取评论时发生错误:', err.message)
   }
 }
-
-
 
 // 添加评论
 const addComment = async () => {
@@ -252,13 +265,13 @@ const formatDate = (datetime) => {
 // 获取图片URL
 const getImageUrl = (relativeUrl) => {
   const baseUrl = 'http://localhost:5173/src/assets/' // 修改为正确的基础URL
-  return relativeUrl ? `${baseUrl}${relativeUrl}` : 'http://localhost:5173/assets/default.jpg' // 替换为默认图片URL
+  return relativeUrl ? `${baseUrl}${relativeUrl}` : `${baseUrl}20241203155134.jpg` // 替换为默认图片URL
 }
 
 // 处理选课按钮逻辑
 const canSelectCourse = computed(() => {
   if (userInfo.value.role === 1) { // 学生
-    return course.value.status === '未开课' || course.value.status === '进行中'
+    return course.value.status === '未开课' || course.value.status === '已开课'
   }
   return false
 })
@@ -267,8 +280,8 @@ const selectButtonText = computed(() => {
   if (userInfo.value.role === 1) { // 学生
     if (course.value.status === '未开课') {
       return '选课 (未开课)'
-    } else if (course.value.status === '进行中') {
-      return '选课 (进行中)'
+    } else if (course.value.status === '已开课') {
+      return '选课 (已开课)'
     }
   }
   return '不可选课'
@@ -490,6 +503,10 @@ onMounted(() => {
 .comment-content {
   font-size: 1em;
   color: #555;
+}
+
+.notes-section-wrapper {
+  /* 可以根据需要添加样式 */
 }
 
 .loading,
