@@ -17,10 +17,10 @@
           </div>
           <button
             class="select-course-button"
-            :disabled="!canSelectCourse"
-            @click="handleSelectCourse"
+            :disabled="!canInteractWithCourse"
+            @click="handleButtonClick"
           >
-            {{ selectButtonText }}
+            {{ buttonText }}
           </button>
         </div>
       </div>
@@ -55,42 +55,8 @@
         </div>
 
         <!-- 评论区 -->
-        <div v-else-if="currentTab === 'comments'" class="comments-section">
-          <!-- 添加评论表单 -->
-          <div v-if="course.allow_comments">
-            <div class="add-comment">
-              <h2>添加评论</h2>
-              <textarea v-model="newCommentContent" placeholder="请输入您的评论..." rows="4"></textarea>
-              <button @click="addComment" :disabled="!canAddComment">提交评论</button>
-            </div>
-
-            <!-- 评论列表 -->
-            <div class="comments-list">
-              <h2>所有评论</h2>
-              <div v-if="comments.length === 0">暂无评论</div>
-              <div v-else>
-                <div v-for="comment in comments" :key="comment.comment_id" class="comment-item">
-                  <div class="comment-header">
-                    <img :src="getImageUrl(comment.user_image)" alt="User Avatar" class="user-avatar" />
-                    <span class="username">{{ comment.username }}</span>
-                    <span class="comment-time">{{ formatDate(comment.create_at) }}</span>
-                    <button
-                      v-if="comment.user_id === userInfo.user_id"
-                      class="delete-button"
-                      @click="deleteComment(comment.comment_id)"
-                    >
-                      删除
-                    </button>
-                  </div>
-                  <div class="comment-content">{{ comment.content }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-else>
-            <p>该课程暂时不允许评论。</p>
-          </div>
+        <div v-else-if="currentTab === 'comments'" class="comments-section-wrapper">
+          <Comments :courseId="course.course_id" :course="course" />
         </div>
 
         <!-- 笔记区 -->
@@ -104,9 +70,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router' // 引入 useRouter
 import axiosInstance from '@/utils/request/Axios.ts'
 import Breadcrumb from './Breadcrumb.vue'
+import Comments from './Comments.vue'
 import Notes from './Notes.vue'
 import { getLoginRecord } from '../homePage/login/LoginRecord'
 
@@ -123,14 +90,29 @@ const currentTab = ref('description') // 'description' 或 'comments' 或 'notes
 // 用户信息
 const userInfo = ref(getLoginRecord())
 
-// 新评论内容
-const newCommentContent = ref('')
+// 引入 router 实例用于页面跳转
+const router = useRouter()
 
-// 评论列表
-const comments = ref([])
+// 新增：判断用户是否已注册该课程
+const isRegistered = ref(false)
 
-// 存储用户ID到用户名和头像的映射，避免重复请求
-const userNamesMap = ref({})
+// 新增：获取用户已注册的课程列表
+const fetchRegisteredCourses = async () => {
+  try {
+    const response = await axiosInstance.get('/course-registrations/registered', {
+      params: { student_id: userInfo.value.user_id }
+    })
+    if (response.status === 200 && response.data.status === 200) {
+      const registeredCourses = response.data.data
+      // 检查当前课程是否在已注册课程列表中
+      isRegistered.value = registeredCourses.some(registration => registration.course_id === course.value.course_id)
+    } else {
+      console.error('获取已注册课程失败:', response.data.message)
+    }
+  } catch (err) {
+    console.error('获取已注册课程时发生错误:', err.message)
+  }
+}
 
 // 获取课程详情
 const fetchCourseDetail = async () => {
@@ -142,6 +124,8 @@ const fetchCourseDetail = async () => {
     if (response.status === 200 && response.data.status === 200) {
       course.value = response.data.data
       console.log('Course Data:', course.value) // 调试日志
+      // 获取已注册课程
+      await fetchRegisteredCourses()
     } else {
       error.value = response.data.message || '获取课程详情失败'
       console.error('Error:', error.value) // 调试日志
@@ -151,109 +135,6 @@ const fetchCourseDetail = async () => {
     console.error('Catch Error:', error.value) // 调试日志
   }
   loading.value = false
-}
-
-// 获取所有评论
-const fetchComments = async () => {
-  try {
-    const response = await axiosInstance.get(`/comments/course/${courseId}`)
-    console.log('Fetch Comments Response:', response) // 调试日志
-
-    if (response.status === 200 && response.data.status === 200) {
-      const fetchedComments = response.data.data
-
-      // 为每条评论获取用户名，并设置默认头像
-      for (const comment of fetchedComments) {
-        if (!comment.user_id) {
-          // 处理没有 user_id 的评论
-          comment.username = '未知用户'
-          comment.user_image = 'default_avatar.jpg'
-          continue
-        }
-
-        if (!userNamesMap.value[comment.user_id]) {
-          try {
-            const userResponse = await axiosInstance.get(`/username/${comment.user_id}`)
-            console.log(userResponse)
-            if (userResponse.status === 200 && userResponse.data.status === 200) {
-              userNamesMap.value[comment.user_id] = {
-                username: userResponse.data.message,
-                user_image: '20241203155134.jpg' // 始终使用默认头像
-              }
-            } else {
-              userNamesMap.value[comment.user_id] = {
-                username: '未知用户',
-                user_image: '20241203155134.jpg' // 默认头像
-              }
-            }
-          } catch (err) {
-            console.error(`获取用户 ${comment.user_id} 信息时发生错误:`, err.message)
-            userNamesMap.value[comment.user_id] = {
-              username: '未知用户',
-              user_image: '20241203155134.jpg' // 默认头像
-            }
-          }
-        }
-
-        comment.username = userNamesMap.value[comment.user_id].username
-        comment.user_image = userNamesMap.value[comment.user_id].user_image
-      }
-
-      comments.value = fetchedComments
-    } else {
-      console.error('获取评论失败:', response.data.message)
-    }
-  } catch (err) {
-    console.error('获取评论时发生错误:', err.message)
-  }
-}
-
-// 添加评论
-const addComment = async () => {
-  if (!newCommentContent.value.trim()) {
-    alert('评论内容不能为空')
-    return
-  }
-  try {
-    const payload = {
-      course_id: course.value.course_id,
-      user_id: userInfo.value.user_id, // 确保包含 user_id
-      content: newCommentContent.value
-    }
-    const response = await axiosInstance.post(`/comments/action?action=add`, payload)
-    if (response.status === 200 && response.data.status === 200) {
-      alert('评论添加成功')
-      newCommentContent.value = ''
-      fetchComments()
-    } else {
-      alert(response.data.message || '添加评论失败')
-    }
-  } catch (err) {
-    console.error('添加评论时发生错误:', err.message)
-    alert('添加评论失败')
-  }
-}
-
-// 删除评论
-const deleteComment = async (commentId) => {
-  if (!confirm('确定要删除这条评论吗？')) {
-    return
-  }
-  try {
-    const payload = {
-      comment_id: commentId
-    }
-    const response = await axiosInstance.post(`/comments/action?action=delete`, payload)
-    if (response.status === 200 && response.data.status === 200) {
-      alert('评论删除成功')
-      fetchComments()
-    } else {
-      alert(response.data.message || '删除评论失败')
-    }
-  } catch (err) {
-    console.error('删除评论时发生错误:', err.message)
-    alert('删除评论失败')
-  }
 }
 
 // 格式化日期
@@ -268,37 +149,59 @@ const getImageUrl = (relativeUrl) => {
   return relativeUrl ? `${baseUrl}${relativeUrl}` : `${baseUrl}20241203155134.jpg` // 替换为默认图片URL
 }
 
-// 处理选课按钮逻辑
-const canSelectCourse = computed(() => {
+// 计算是否可以与课程进行交互（选课或进入学习）
+const canInteractWithCourse = computed(() => {
   if (userInfo.value.role === 1) { // 学生
-    return course.value.status === '未开课' || course.value.status === '已开课'
+    return course.value.status === '未开课' || course.value.status === '已开课' || isRegistered.value
   }
   return false
 })
 
-const selectButtonText = computed(() => {
+// 计算按钮文本
+const buttonText = computed(() => {
   if (userInfo.value.role === 1) { // 学生
-    if (course.value.status === '未开课') {
-      return '选课 (未开课)'
-    } else if (course.value.status === '已开课') {
-      return '选课 (已开课)'
+    if (isRegistered.value) {
+      return '开始学习'
+    } else {
+      if (course.value.status === '未开课') {
+        return '选课 (未开课)'
+      } else if (course.value.status === '已开课') {
+        return '选课 (已开课)'
+      }
     }
   }
   return '不可选课'
 })
 
+// 选课或进入学习按钮点击处理
+const handleButtonClick = async () => {
+  if (isRegistered.value) {
+    // 用户已注册，跳转到学习详情页面
+    // 假设学习详情页面的路由为 /courses/:courseId/learn
+    router.push(`/courses/${course.value.course_id}/learn`)
+  } else {
+    // 用户未注册，执行选课操作
+    handleSelectCourse()
+  }
+}
+
 // 选课按钮点击处理
 const handleSelectCourse = async () => {
   try {
-    // 假设有一个API端点用于选课，例如 POST /courses/select
-    const payload = {
-      course_id: course.value.course_id,
-      user_id: userInfo.value.user_id
-    }
-    const response = await axiosInstance.post(`/courses/select`, payload)
+    const payload = new URLSearchParams();
+    payload.append('student_id', userInfo.value.user_id); // 使用 student_id 替代 user_id
+    payload.append('course_id', course.value.course_id);
+
+    const response = await axiosInstance.post('/course-registrations/register', payload, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
     if (response.status === 200 && response.data.status === 200) {
       alert('选课成功')
-      // 这里可以更新按钮状态或其他逻辑
+      // 更新 UI 状态
+      isRegistered.value = true
     } else {
       alert(response.data.message || '选课失败')
     }
@@ -308,17 +211,9 @@ const handleSelectCourse = async () => {
   }
 }
 
-// 检查是否可以添加评论
-const canAddComment = computed(() => {
-  return userInfo.value.isLogged && course.value.allow_comments
-})
-
+// 在组件挂载时获取课程详情
 onMounted(() => {
-  fetchCourseDetail().then(() => {
-    if (course.value) {
-      fetchComments()
-    }
-  })
+  fetchCourseDetail()
 })
 </script>
 
@@ -413,96 +308,8 @@ onMounted(() => {
   color: #555;
 }
 
-.comments-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.add-comment {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.add-comment textarea {
-  width: 100%;
-  padding: 10px;
-  resize: vertical;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.add-comment button {
-  align-self: flex-end;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.add-comment button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.comments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.comment-item {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  background-color: #f9f9f9;
-}
-
-.comment-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.username {
-  font-weight: bold;
-  color: #333;
-}
-
-.comment-time {
-  margin-left: auto;
-  font-size: 0.9em;
-  color: #888;
-}
-
-.delete-button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
-}
-
-.comment-content {
-  font-size: 1em;
-  color: #555;
+.comments-section-wrapper {
+  /* 可以根据需要添加样式 */
 }
 
 .notes-section-wrapper {
