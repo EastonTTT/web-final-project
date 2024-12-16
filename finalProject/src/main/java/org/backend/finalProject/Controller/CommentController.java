@@ -58,6 +58,20 @@ public class CommentController {
         }
     }
 
+
+    /**
+     * 根据用户ID获取该用户的所有评论
+     * GET /comments/user/{userId}
+     */
+    @GetMapping("/user/{userId}")
+    public Result<List<CommentDTO>> getCommentsByUserId(@PathVariable Integer userId) {
+        try {
+            List<CommentDTO> comments = commentService.getCommentsByUserId(userId);
+            return Result.success(comments);
+        } catch (Exception e) {
+            return Result.failed("获取评论失败: " + e.getMessage());
+        }
+    }
     /**
      * 根据课程ID和用户ID获取该用户在该课程的所有评论
      * GET /comments/course/{courseId}/user/{userId}

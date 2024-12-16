@@ -38,4 +38,11 @@ public class CommentService {
     public List<CommentDTO> getCommentsByCourseIdAndUserId(Integer courseId, Integer userId) {
         return commentMapper.getCommentsByCourseIdAndUserId(courseId, userId);
     }
+
+    /**
+     * 根据用户ID获取该用户的所有评论
+     */
+    public List<CommentDTO> getCommentsByUserId(Integer userId) {
+        return commentMapper.selectCommentsByUserId(userId);
+    }
 }

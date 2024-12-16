@@ -26,6 +26,12 @@ public interface CommentMapper {
     @Select("SELECT * FROM webfinal.comments WHERE course_id = #{course_id} AND user_id = #{user_id}")
     List<CommentDTO> getCommentsByCourseIdAndUserId(@Param("course_id") Integer courseId, @Param("user_id") Integer userId);
 
+    /**
+     * 根据用户ID获取该用户的所有评论
+     */
+    @Select("SELECT * FROM webfinal.comments WHERE user_id = #{userId}")
+    List<CommentDTO> selectCommentsByUserId(Integer userId);
+
     // 删除评论
     @Delete("DELETE FROM webfinal.comments WHERE comment_id = #{comment_id}")
     void deleteComment(@Param("comment_id") Integer commentId);

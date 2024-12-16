@@ -33,13 +33,19 @@
         >
           课程介绍
         </button>
+
+        <!-- 新增：根据 allow_comments 显示“评论区”标签 -->
         <button
+          v-if="course.allow_comments"
           :class="['tab-button', currentTab === 'comments' ? 'active' : '']"
           @click="currentTab = 'comments'"
         >
           评论区
         </button>
+
+        <!-- 新增：根据 allow_notes、用户角色和是否已注册显示“笔记区”标签 -->
         <button
+          v-if="course.allow_notes && isStudent && isRegistered"
           :class="['tab-button', currentTab === 'notes' ? 'active' : '']"
           @click="currentTab = 'notes'"
         >
@@ -55,12 +61,18 @@
         </div>
 
         <!-- 评论区 -->
-        <div v-else-if="currentTab === 'comments'" class="comments-section-wrapper">
+        <div
+          v-else-if="currentTab === 'comments' && course.allow_comments"
+          class="comments-section-wrapper"
+        >
           <Comments :courseId="course.course_id" :course="course" />
         </div>
 
         <!-- 笔记区 -->
-        <div v-else-if="currentTab === 'notes'" class="notes-section-wrapper">
+        <div
+          v-else-if="currentTab === 'notes' && course.allow_notes && isStudent && isRegistered"
+          class="notes-section-wrapper"
+        >
           <Notes :courseId="course.course_id" :course="course" />
         </div>
       </div>
@@ -95,6 +107,9 @@ const router = useRouter()
 
 // 新增：判断用户是否已注册该课程
 const isRegistered = ref(false)
+
+// 新增：判断用户角色是否为学生
+const isStudent = computed(() => userInfo.value.role === 1)
 
 // 新增：获取用户已注册的课程列表
 const fetchRegisteredCourses = async () => {
