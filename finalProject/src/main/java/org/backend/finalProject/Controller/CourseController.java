@@ -17,7 +17,7 @@ public class CourseController {
 
     /**
      * 获取所有课程
-     * 前端可通过GET请求: GET /courses
+     * GET /courses
      */
     @GetMapping
     public Result<List<CourseDTO>> getAllCourses() {
@@ -31,16 +31,34 @@ public class CourseController {
 
     /**
      * 根据课程ID获取课程
-     * 前端可通过GET请求: GET /courses/{courseId}
+     * GET /courses/course/{courseId}
      */
-    @GetMapping("/{courseId}")
-    public Result<CourseDTO> getCourseById(@PathVariable Integer courseId) {
+    @GetMapping("/course/{courseId}")
+    public Result<CourseDTO> getCourseByCourseId(@PathVariable Integer courseId) {
         try {
-            CourseDTO course = courseService.getCourseById(courseId);
+            CourseDTO course = courseService.getCourseByCourseId(courseId);
             if (course != null) {
                 return Result.success(course);
             } else {
                 return Result.failed("未找到指定课程");
+            }
+        } catch (Exception e) {
+            return Result.failed("获取课程信息失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 根据教师ID获取课程列表
+     * GET /courses/teacher/{teacherID}
+     */
+    @GetMapping("/teacher/{teacherID}")
+    public Result<List<CourseDTO>> getCoursesByTeacherId(@PathVariable Integer teacherID) {
+        try {
+            List<CourseDTO> courses = courseService.getCoursesByTeacherId(teacherID);
+            if (courses != null && !courses.isEmpty()) {
+                return Result.success(courses);
+            } else {
+                return Result.failed("未找到指定教师的课程");
             }
         } catch (Exception e) {
             return Result.failed("获取课程信息失败: " + e.getMessage());
@@ -64,7 +82,7 @@ public class CourseController {
                     System.out.println("teacherId: " + courseDTO.getTeacher_id());
                     courseService.addCourse(courseDTO);
 
-                    return Result.success("课程添加成功");
+                    return Result.success("课程发布成功");
 
                 case "update":
                     // 更新课程需要courseId为必传值

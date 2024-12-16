@@ -17,21 +17,25 @@ public interface CourseMapper {
     void insertCourse(CourseDTO courseDTO);
 
     // 根据课程ID获取课程信息
-    @Select("SELECT * FROM webfinal.courses WHERE course_id = #{courseId}")
-    CourseDTO getCourseById(@Param("courseId") Integer courseId);
+    @Select("SELECT * FROM webfinal.courses WHERE course_id = #{course_id}")
+    CourseDTO getCourseByCourseId(@Param("course_id") Integer courseId);
+
+    // 根据课程ID获取课程信息
+    @Select("SELECT * FROM webfinal.courses WHERE teacher_id = #{teacher_id}")
+    List<CourseDTO> getCoursesByTeacherId(@Param("teacher_id") Integer teacherID);
 
     // 获取所有课程信息
     @Select("SELECT * FROM webfinal.courses")
     List<CourseDTO> getAllCourses();
 
     // 更新课程信息
-    @Update("UPDATE webfinal.courses SET course_name = #{courseName}, course_description = #{courseDescription}, " +
-            "course_image = #{courseImage}, course_type = #{courseType}, allow_comments = #{allowComments}, " +
-            "allow_notes = #{allowNotes}, status = #{status}, start_time = #{startTime}, end_time = #{endTime}, " +
-            "updated_at = NOW() WHERE course_id = #{courseId}")
+    @Update("UPDATE webfinal.courses SET course_name = #{course_name}, course_description = #{course_description}, " +
+            "course_image = #{course_image}, course_type = #{course_type}, allow_comments = #{allow_comments}, " +
+            "allow_notes = #{allow_notes}, status = #{status}, start_time = #{start_time}, end_time = #{end_time}, " +
+            "updated_at = NOW() WHERE course_id = #{course_id}")
     void updateCourse(CourseDTO courseDTO);
 
     // 删除课程
-    @Delete("DELETE FROM webfinal.courses WHERE course_id = #{courseId}")
-    void deleteCourse(@Param("courseId") Integer courseId);
+    @Delete("DELETE FROM webfinal.courses WHERE course_id = #{course_id}")
+    void deleteCourse(@Param("course_id") Integer courseId);
 }

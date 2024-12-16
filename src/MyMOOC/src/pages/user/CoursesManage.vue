@@ -5,11 +5,11 @@
       <el-tab-pane label="课程发布" name="coursePublishing">
         <CoursePublishing />
       </el-tab-pane>
-      <el-tab-pane label="课件管理" name="courseware">
-        <CourseManagement />
-      </el-tab-pane>
       <el-tab-pane label="已发布课程" name="publishedCourses">
         <PublishedCourses />
+      </el-tab-pane>
+      <el-tab-pane label="课件管理" name="courseware">
+        <CourseManagement />
       </el-tab-pane>
     </el-tabs>
   </div>
