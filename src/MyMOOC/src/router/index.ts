@@ -1,6 +1,7 @@
 import HomePage from '@/pages/homePage/index.vue'
 import CoursePage from '@/pages/coursePage/index.vue'
 import CourseDetail from '@/pages/coursePage/CourseDetail.vue'
+import Learn from '@/pages/coursePage/Learn.vue'
 import LoginForm from '@/pages/homePage/login/LoginForm.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
@@ -36,6 +37,12 @@ const router = createRouter({
           path: '/courses/:courseId',
           name: 'CourseDetail',
           component: CourseDetail,
+          props: true
+        },
+        {
+          path: '/courses/:courseId/learn',
+          name: 'Learn',
+          component: Learn,
           props: true
         },
         {
