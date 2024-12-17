@@ -50,6 +50,8 @@ public class CourseDTO {
     // 更新时间
     private LocalDateTime updated_at;
 
+    private Boolean is_recommended;
+
     public Integer getCourse_id() {
         return course_id;
     }
@@ -152,5 +154,13 @@ public class CourseDTO {
 
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public Boolean getIs_recommended() {
+        return is_recommended;
+    }
+
+    public void setIs_recommended(Boolean is_recommended) {
+        this.is_recommended = is_recommended;
     }
 }

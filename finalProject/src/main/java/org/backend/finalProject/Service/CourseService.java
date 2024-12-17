@@ -44,4 +44,9 @@ public class CourseService {
     public void deleteCourse(Integer courseId) {
         courseMapper.deleteCourse(courseId);
     }
+
+    // 设置推荐
+    public void updateRecommendation(Integer courseId, Boolean isRecommended) {
+        courseMapper.updateRecommendation(courseId, isRecommended);
+    }
 }

@@ -38,4 +38,8 @@ public interface CourseMapper {
     // 删除课程
     @Delete("DELETE FROM webfinal.courses WHERE course_id = #{course_id}")
     void deleteCourse(@Param("course_id") Integer courseId);
+
+
+    @Update("UPDATE courses SET is_recommended = #{isRecommended} WHERE course_id = #{courseId}")
+    void updateRecommendation(@Param("courseId") Integer courseId, @Param("isRecommended") Boolean isRecommended);
 }

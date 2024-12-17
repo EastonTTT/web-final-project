@@ -107,4 +107,19 @@ public class CourseController {
             return Result.failed("操作失败: " + e.getMessage());
         }
     }
+
+
+    /**
+     * 更新课程推荐状态
+     * POST /courses/updateRecommendation
+     */
+    @PostMapping("/updateRecommendation")
+    public Result<?> updateCourseRecommendation(@RequestParam Integer courseId, @RequestParam Boolean isRecommended) {
+        try {
+            courseService.updateRecommendation(courseId, isRecommended);
+            return Result.success("课程推荐状态更新成功");
+        } catch (Exception e) {
+            return Result.failed("更新推荐状态失败: " + e.getMessage());
+        }
+    }
 }
