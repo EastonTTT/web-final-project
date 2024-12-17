@@ -28,7 +28,7 @@ public class UserDTO {
     private Integer role;
 
     //账户创建时间
-    private LocalDateTime create_at;
+    private LocalDateTime created_at;
 
     //账户数据更新时间
     private LocalDateTime updated_at;
@@ -73,12 +73,12 @@ public class UserDTO {
         this.role = role;
     }
 
-    public LocalDateTime getCreate_at() {
-        return create_at;
+    public LocalDateTime getcreated_at() {
+        return created_at;
     }
 
-    public void setCreate_at(LocalDateTime create_at) {
-        this.create_at = create_at;
+    public void setcreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 
     public LocalDateTime getUpdated_at() {

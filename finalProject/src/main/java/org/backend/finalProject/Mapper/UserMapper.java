@@ -1,21 +1,33 @@
 package org.backend.finalProject.Mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.backend.finalProject.Pojo.LoginRequestDTO;
 import org.backend.finalProject.Pojo.UserDTO;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
 
     @Select("SELECT * FROM webfinal.users WHERE  username = #{username} AND password = #{password}")
-    public UserDTO selectUser(LoginRequestDTO loginRequestDTO);
+    UserDTO selectUser(LoginRequestDTO loginRequestDTO);
 
     @Insert("INSERT INTO webfinal.users (username, password, email, role)" +
             "VALUES (#{username},#{password},#{email},#{role})")
-    public void insertUser(UserDTO userDTO);
+    void insertUser(UserDTO userDTO);
 
     @Select("SELECT username FROM webfinal.users WHERE user_id = #{user_id}")
-    public String selectUsernameById(int user_id);
+    String selectUsernameById(int user_id);
+
+    @Select("SELECT * FROM webfinal.users WHERE user_id = #{user_id}")
+    UserDTO selectUserByID(Integer user_id);
+
+    @Select("SELECT * FROM webfinal.users")
+    List<UserDTO> selectAllUser();
+
+    @Update("UPDATE webfinal.users SET password = '66666666' WHERE username = #{username}")
+    void resetPassword(String username);
+
+    @Delete("DELETE FROM webfinal.users WHERE username = #{username}")
+    void deleteUser(String username);
 }

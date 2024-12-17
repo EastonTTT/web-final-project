@@ -44,4 +44,26 @@ public class CourseService {
     public void deleteCourse(Integer courseId) {
         courseMapper.deleteCourse(courseId);
     }
+
+    //推荐课程
+    public boolean recommendCourse(String courseName){
+        try {
+            courseMapper.handleRecommend(1,courseName);
+            return true;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    //取消推荐课程
+    public boolean cancelRecommend(String courseName){
+        try {
+            courseMapper.handleRecommend(0,courseName);
+            return true;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

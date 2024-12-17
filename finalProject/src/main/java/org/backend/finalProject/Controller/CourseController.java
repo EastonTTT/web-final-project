@@ -107,4 +107,24 @@ public class CourseController {
             return Result.failed("操作失败: " + e.getMessage());
         }
     }
+
+    @PostMapping("recommend")
+    public Result handleRecommend(@RequestBody CourseDTO courseDTO){
+        String courseName = courseDTO.getCourse_name();
+        if(courseService.recommendCourse(courseName)){
+            return Result.success("设置推荐成功");
+        }else {
+            return Result.failed("设置推荐失败");
+        }
+    }
+
+    @PostMapping("cancelRecommend")
+    public Result cancelRecommend(@RequestBody CourseDTO courseDTO){
+        String courseName = courseDTO.getCourse_name();
+        if(courseService.cancelRecommend(courseName)){
+            return Result.success("取消推荐成功");
+        }else {
+            return Result.failed("取消推荐失败");
+        }
+    }
 }
