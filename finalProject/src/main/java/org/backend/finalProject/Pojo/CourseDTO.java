@@ -164,11 +164,5 @@ public class CourseDTO {
         this.updated_at = updated_at;
     }
 
-    public Boolean getIs_recommended() {
-        return is_recommended;
-    }
 
-    public void setIs_recommended(Boolean is_recommended) {
-        this.is_recommended = is_recommended;
-    }
 }
