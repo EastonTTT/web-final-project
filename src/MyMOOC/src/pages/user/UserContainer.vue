@@ -13,7 +13,7 @@
         个人信息
       </t-menu-item>
 
-      <t-menu-item value="account-manage" style="height: 60px" @click="goToAccountManage" v-if="loginRecord?.role === 3">
+      <t-menu-item value="account-manage" style="height: 60px" @click="goToAccountManage" v-if="loginRecord?.role === 2">
         <template #icon>
           <t-icon name="server" />
         </template>
@@ -39,6 +39,13 @@
           <t-icon name="edit-1" />
         </template>
         我的讨论
+      </t-menu-item>
+
+      <t-menu-item value="recommend-course" style="height: 60px" @click="goToRecommendCourses" v-if="loginRecord?.role===3">
+        <template #icon>
+          <t-icon name="edit-1" />
+        </template>
+        课程推荐
       </t-menu-item>
     </t-menu>
   </t-aside>
@@ -89,7 +96,11 @@ function goToMyDiscussion(){
 function goToCoursesManage(){
   router.push({name:'coursesManage'})
   menuValue.value = 'course-manage'
+}
 
+function goToRecommendCourses(){
+  router.push({name:'recommendCourses'})
+  menuValue.value = 'recommend-course'
 }
 </script>
 

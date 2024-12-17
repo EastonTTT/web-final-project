@@ -34,7 +34,7 @@
       </t-form-item> -->
 
       <t-form-item
-        label="入学时间"
+        label="账号创建日期"
         name="date"
         :rules="[{ date: { delimiters: ['/', '-', '.'] }, message: '日期格式有误' }]"
       >
@@ -44,7 +44,7 @@
       <t-form-item>
         <t-space size="small">
           <t-button theme="primary" type="submit">提交</t-button>
-          <t-button theme="default" variant="base" type="reset">重置</t-button>
+          <!-- <t-button theme="default" variant="base" type="reset">重置</t-button> -->
         </t-space>
       </t-form-item>
     </t-form>
