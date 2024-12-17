@@ -14,6 +14,7 @@ import { defaultLoginRecord } from '../homePage/login/LoginRecord';
 import Breadcrumb from './Breadcrumb.vue';
 import UserContainer from './UserContainer.vue';
 import InfoBar from './InfoBar.vue';
+import { ElNotification } from 'element-plus'
 
 const router = useRouter();
 interface LoginRecord {
@@ -25,7 +26,11 @@ interface LoginRecord {
 
 const loginRecord = inject<LoginRecord>('loginRecord',defaultLoginRecord)
 if(loginRecord?.isLogged === false){
-  alert('请先登录！')
+  ElNotification({
+    title: 'Error',
+    message: '需要登录才能访问个人主页！',
+    type: 'error',
+  })
   router.push({name:'HomePage'});
 }
 </script>

@@ -108,18 +108,23 @@ public class CourseController {
         }
     }
 
+    @PostMapping("recommend")
+    public Result handleRecommend(@RequestBody CourseDTO courseDTO){
+        String courseName = courseDTO.getCourse_name();
+        if(courseService.recommendCourse(courseName)){
+            return Result.success("设置推荐成功");
+        }else {
+            return Result.failed("设置推荐失败");
+        }
+    }
 
-    /**
-     * 更新课程推荐状态
-     * POST /courses/updateRecommendation
-     */
-    @PostMapping("/updateRecommendation")
-    public Result<?> updateCourseRecommendation(@RequestParam Integer courseId, @RequestParam Boolean isRecommended) {
-        try {
-            courseService.updateRecommendation(courseId, isRecommended);
-            return Result.success("课程推荐状态更新成功");
-        } catch (Exception e) {
-            return Result.failed("更新推荐状态失败: " + e.getMessage());
+    @PostMapping("cancelRecommend")
+    public Result cancelRecommend(@RequestBody CourseDTO courseDTO){
+        String courseName = courseDTO.getCourse_name();
+        if(courseService.cancelRecommend(courseName)){
+            return Result.success("取消推荐成功");
+        }else {
+            return Result.failed("取消推荐失败");
         }
     }
 }

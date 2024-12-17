@@ -4,15 +4,16 @@ import type{Result} from "../resultModel.ts";
 import type { StringMappingType } from "typescript";
 
 interface MyAxiosInstance extends AxiosInstance{
-  testGetting :<T = any> (url: string, params?: Record<string, any>) => Promise<Result<T>>;
+  myGetting :<T = any> (url: string, params?: Record<string, any>) => Promise<Result<T>>;
   myPosting :<T = any> (url:string, data?:Record<string, any>) => Promise<Result<T>>;
+  myDelete :<T = any> (url:string, data?:Record<string, any>) => Promise<Result<T>>;
 }
 
 const axiosInstance:MyAxiosInstance = axios.create({
   baseURL:'http://localhost:8080',
 })as MyAxiosInstance;
 
-axiosInstance.testGetting = async function <T = any>(url: string, params?:Record<string,any>){
+axiosInstance.myGetting = async function <T = any>(url: string, params?:Record<string,any>){
   try{
     const response = await this.get(url,params);
     if(response.data.status !== 200){
@@ -53,7 +54,24 @@ axiosInstance.myPosting = async function (url: string, data?: Record<string, any
       data: null
     };
   }
-};
+}
+
+axiosInstance.myDelete = async function (url: string, data?: Record<string,any>) {
+  try {
+    const response = await this.delete(url, data);
+    return {
+      status: response.status,
+      message: '',
+      data: response.data
+    }
+  } catch (error: any) {
+    return {
+      status: error.response?.status || 500,
+      message: error.message || "Internal server error",
+      data: null
+    };
+  }
+}
 
 
 export default axiosInstance;

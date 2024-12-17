@@ -1,37 +1,21 @@
 <template>
   <t-space direction="vertical" size="large" style="margin: 30px 100px;">
     <!-- 可以使用全局 ConfigProvider errorMessage 配置规则校验结果描述，而无需给每一个表单都配置校验信息 -->
-    <t-radio-group v-model="errorConfig" variant="default-filled">
-      <t-radio-button value="default">
-        <t-popup content="Form.errorMessage 为空，使用组件内置校验信息。重置后，点击提交观察校验结果信息">
-          使用表单默认校验信息
-        </t-popup>
-      </t-radio-button>
 
-      <t-radio-button value="config">
-        <t-popup content="统一配置 Form.errorMessage，使用自定义配置的校验信息。重置后，点击提交观察校验结果信息">
-          表单统一配置校验信息
-        </t-popup>
-      </t-radio-button>
-    </t-radio-group>
 
     <!-- error-message 非必需 -->
     <t-form
       ref="form"
       :data="formData"
       :rules="rules"
-      :error-message="errorConfig === 'default' ? undefined : errorMessage"
       scroll-to-first-error="smooth"
       @reset="onReset"
       @submit="onSubmit"
+      style="margin: 20px 10px;"
     >
       <!-- !!!注意：当 FormItem 的 label 属性为 Function 时，errorMessage 模板中的 ${name} 会被替换为 FormItem.name 属性值 -->
-      <t-form-item :label="renderLabel" name="account">
-        <t-input v-model="formData.account"></t-input>
-      </t-form-item>
-
-      <t-form-item label="个人简介" name="description">
-        <t-input v-model="formData.description"></t-input>
+      <t-form-item label="用户名" name="account" style="width: 400px;">
+        <t-input v-model="formData.account" disabled></t-input>
       </t-form-item>
 
       <t-form-item label="密码" name="password">
@@ -42,45 +26,33 @@
         <t-auto-complete v-model="formData.email" :options="emailOptions" filterable></t-auto-complete>
       </t-form-item>
 
-      <t-form-item label="性别" name="gender">
+      <!-- <t-form-item label="性别" name="gender">
         <t-radio-group v-model="formData.gender">
           <t-radio value="male">男</t-radio>
           <t-radio value="femal">女</t-radio>
         </t-radio-group>
-      </t-form-item>
-
-      <t-form-item label="学院" name="college">
-        <t-select v-model="formData.college" class="demo-select-base" clearable>
-          <t-option v-for="(item, index) in options" :key="index" :value="item.value" :label="item.label">
-            {{ item.label }}
-          </t-option>
-        </t-select>
-      </t-form-item>
+      </t-form-item> -->
 
       <t-form-item
-        label="入学时间"
+        label="账号创建日期"
         name="date"
         :rules="[{ date: { delimiters: ['/', '-', '.'] }, message: '日期格式有误' }]"
       >
-        <t-input v-model="formData.date"></t-input>
-      </t-form-item>
-
-      <t-form-item label="个人网站" name="content.url">
-        <t-input v-model="formData.content.url"></t-input>
+        <t-input v-model="formData.date" disabled=""></t-input>
       </t-form-item>
 
       <t-form-item>
         <t-space size="small">
           <t-button theme="primary" type="submit">提交</t-button>
-          <t-button theme="default" variant="base" type="reset">重置</t-button>
-          <t-button theme="default" variant="base" @click="handleClear">清空校验结果</t-button>
+          <!-- <t-button theme="default" variant="base" type="reset">重置</t-button> -->
         </t-space>
       </t-form-item>
     </t-form>
   </t-space>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, inject } from 'vue';
+import MyAxios from '@/utils/request/Axios';
 import {
   MessagePlugin,
   FormProps,
@@ -90,21 +62,29 @@ import {
   FormItemProps,
   ButtonProps,
 } from 'tdesign-vue-next';
+import { log } from 'console';
+
+interface LoginRecord {
+  user_id: number | null;
+  username: string | null;
+  role: number | null;
+  isLogged: boolean;
+}
+
+const loginRecord = inject<LoginRecord>('loginRecord')
+console.log(loginRecord);
+
+//查询个人信息
+getMyInfo();
+
 const formData: FormProps['data'] = reactive({
   account: '',
   password: '',
-  description: '',
   email: '',
   gender: '',
-  college: '',
   date: '',
-  content: {
-    url: '',
-  },
-  course: [],
 });
 const form = ref<FormInstanceFunctions>(null);
-const errorConfig = ref('default');
 const emailSuffix = ['@qq.com', '@163.com', '@gmail.com'];
 const emailOptions = computed<AutoCompleteProps['options']>(() => {
   const emailPrefix = formData.email.split('@')[0];
@@ -112,20 +92,7 @@ const emailOptions = computed<AutoCompleteProps['options']>(() => {
   return emailSuffix.map((suffix) => emailPrefix + suffix);
 });
 
-const options = [
-  {
-    label: '计算机学院',
-    value: '1',
-  },
-  {
-    label: '软件学院',
-    value: '2',
-  },
-  {
-    label: '物联网学院',
-    value: '3',
-  },
-];
+
 const onReset: FormProps['onReset'] = () => {
   MessagePlugin.success('重置成功');
 };
@@ -137,19 +104,7 @@ const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
     MessagePlugin.warning(firstError);
   }
 };
-const renderLabel: FormItemProps['label'] = () => '用户名';
 
-/* eslint-disable no-template-curly-in-string */
-const errorMessage = {
-  date: '${name}不正确',
-  url: '${name}不正确',
-  required: '请输入${name}',
-  max: '${name}字符长度不能超过 ${validate} 个字符，一个中文等于两个字符',
-  min: '${name}字符长度不能少于 ${validate} 个字符，一个中文等于两个字符',
-  len: '${name}字符长度必须是 ${validate}',
-  pattern: '${name}不正确',
-  validator: '${name}有误',
-};
 const rules: FormProps['rules'] = {
   account: [
     {
@@ -162,15 +117,6 @@ const rules: FormProps['rules'] = {
     {
       max: 10,
       type: 'warning',
-    },
-  ],
-  description: [
-    {
-      validator: (val) => val.length >= 5,
-    },
-    {
-      validator: (val) => val.length < 10,
-      message: '不能超过 20 个字，中文长度等于英文长度',
     },
   ],
   password: [
@@ -196,36 +142,32 @@ const rules: FormProps['rules'] = {
       },
     },
   ],
-  gender: [
-    {
-      required: true,
-    },
-  ],
-  course: [
-    {
-      required: true,
-    },
-    {
-      validator: (val) => val.length <= 2,
-      message: '最多选择 2 门课程',
-      type: 'warning',
-    },
-  ],
-  'content.url': [
-    {
-      required: true,
-    },
-    {
-      url: {
-        protocols: ['http', 'https', 'ftp'],
-        require_protocol: true,
-      },
-    },
-  ],
 };
-const handleClear: ButtonProps['onClick'] = () => {
-  form.value.clearValidate();
-};
+
+async function getMyInfo(){
+  try{
+      const response = await MyAxios.myGetting(`user/${loginRecord.user_id}`);
+        if(response.status === 200){
+          MessagePlugin.success('加载个人信息成功')
+          formData.account = response.data.username;
+          formData.password = response.data.password;
+          if (response.data.updated_at) {
+            const date = new Date(response.data.created_at);
+            const formattedDate = date.toLocaleDateString(); // 格式化为 'YYYY/MM/DD' 格式
+            formData.date = formattedDate;
+          }
+          if(response.data.email){
+            formData.email = response.data.email;
+          }
+        }else{
+          MessagePlugin.error('查询个人信息：' + response.message)
+          // console.log(response);
+        }
+    }catch(error){
+      console.log('查询个人信息请求失败',error)
+      MessagePlugin.error('查询个人信息请求失败')
+    }
+  }
 </script>
 
 <style scoped>

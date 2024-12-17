@@ -10,6 +10,7 @@ import CoursesManage from '@/pages/user/CoursesManage.vue'
 import MyCourses from '@/pages/user/MyCourses.vue'
 import MyDiscussion from '@/pages/user/MyDiscussion.vue'
 import AccountManage from '@/pages/user/AccountManage.vue'
+import RecommendCourses from '@/pages/user/RecommendCourses.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +78,11 @@ const router = createRouter({
               path:'accountManage',
               name:'accountManage',
               component:AccountManage
+            },
+            {
+              path: 'recommendCourses',
+              name:'recommendCourses',
+              component:RecommendCourses
             }
           ]
         }

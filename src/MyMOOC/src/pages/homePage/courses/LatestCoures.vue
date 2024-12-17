@@ -12,14 +12,16 @@
         </el-aside>
 
         <el-main>
-          <div class="course-container">
-            <div class="img-container" v-for="image in images" :key="image.id">
+          <div class="container">
+            <div class="course-container" v-for="image in images" :key="image.id">
+             <div class="img-container">
               <img :src="image.url" :alt="image.alt">
               <h3>latest coures</h3>
               <p>latest courses info</p>
             </div>
-
+           </div>
           </div>
+
         </el-main>
       </el-container>
     </el-container>
@@ -42,17 +44,23 @@ const images = ref([
 </script>
 
 <style lang="less" scoped>
-  .course-container{
+.container{
+  margin-bottom: 40px;
   display: flex;
   flex-wrap: wrap;
-  overflow: hidden;
-  justify-content: space-evenly;
+  .course-container{
+    margin: 20px 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   .img-container{
     margin: 30px 0 20px 0;
     border: 1px solid #000;
     text-align: center;
     overflow: hidden;
     width: 240px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
     // height: 300px;
     img{
       // object-fit: contain;
@@ -63,6 +71,10 @@ const images = ref([
     display: flex;
     flex-direction: column;
   }
+  &:hover .img-container {
+    transform: scale(1.1); /* 鼠标悬停时放大图片 */
+    box-shadow: 0 0 20px rgba(0,0,0,0.5); /* 添加阴影 */
+    }
 
 
   .header-img{
@@ -70,6 +82,8 @@ const images = ref([
   }
 
 }
+}
+
 
 
 
