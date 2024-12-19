@@ -152,7 +152,12 @@ const deleteNote = async (noteId) => {
     const payload = {
       note_id: noteId
     }
-    const response = await axiosInstance.post(`/notes/action?action=delete`, payload)
+    const response = await axiosInstance.post(`/notes/action`, payload, {
+      params: {
+        action: 'delete',
+        userId: userInfo.value.user_id
+      }
+    })
     if (response.status === 200 && response.data.status === 200) {
       alert('笔记删除成功')
       fetchNotes()
