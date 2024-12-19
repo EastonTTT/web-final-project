@@ -1,6 +1,7 @@
 package org.backend.finalProject.Controller;
 
 import org.backend.finalProject.Pojo.CourseDTO;
+import org.backend.finalProject.Pojo.CourseImageDTO;
 import org.backend.finalProject.Pojo.Result;
 import org.backend.finalProject.Service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,46 @@ public class CourseController {
             return Result.success("取消推荐成功");
         }else {
             return Result.failed("取消推荐失败");
+        }
+    }
+
+    @GetMapping("imageAll")
+    public Result<CourseImageDTO[]> getAllImage(){
+        CourseImageDTO[] result = courseService.getAllImage();
+        if (result == null){
+            return Result.failed();
+        }else {
+            return Result.success(result);
+        }
+    }
+
+    @GetMapping("/getRecommend")
+    public Result<CourseImageDTO[]> getRecommend(){
+        CourseImageDTO[] result = courseService.getRecommend();
+        if (result == null){
+            return Result.failed();
+        }else {
+            return Result.success(result);
+        }
+    }
+
+    @GetMapping("/getPopular")
+    public Result<CourseImageDTO[]> getPopular(){
+        CourseImageDTO[] result = courseService.getPopular();
+        if (result == null){
+            return Result.failed();
+        }else {
+            return Result.success(result);
+        }
+    }
+
+    @GetMapping("/getLatest")
+    public Result<CourseImageDTO[]> getLatest(){
+        CourseImageDTO[] result = courseService.getLatest();
+        if (result == null){
+            return Result.failed();
+        }else {
+            return Result.success(result);
         }
     }
 }

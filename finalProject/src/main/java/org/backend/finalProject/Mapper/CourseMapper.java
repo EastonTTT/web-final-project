@@ -2,6 +2,7 @@ package org.backend.finalProject.Mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.backend.finalProject.Pojo.CourseDTO;
+import org.backend.finalProject.Pojo.CourseImageDTO;
 
 import java.util.List;
 
@@ -42,4 +43,25 @@ public interface CourseMapper {
     //课程推荐处理
     @Update("UPDATE webfinal.courses SET is_recommended = #{isRecommend} WHERE course_name = #{courseName}")
     void handleRecommend(Integer isRecommend,String courseName );
+
+    //获取所有课程图片URL
+    @Select("SELECT course_id,course_image from webfinal.courses ")
+    CourseImageDTO[] getAllImage();
+
+    @Select("SELECT c.course_id,c.course_image,c.course_name,u.username " +
+            "FROM webfinal.courses c LEFT JOIN webfinal.users u ON c.teacher_id = u.user_id " +
+            "WHERE c.is_recommended = 1")
+    CourseImageDTO[] getRecommend();
+
+    @Select("SELECT cr.course_id,c.course_name,c.course_image ,COUNT(cr.student_id) AS quantity,u.username " +
+            "FROM webfinal.courses c LEFT JOIN webfinal.course_registrations cr on c.course_id = cr.course_id " +
+            "LEFT JOIN webfinal.users u on u.user_id = c.teacher_id " +
+            "GROUP BY cr.course_id,c.course_name,c.course_image,u.username " +
+            "ORDER BY quantity DESC ")
+    CourseImageDTO[] getPopular();
+
+    @Select("SELECT c.course_id,c.course_image,c.course_name,u.username " +
+            "FROM webfinal.courses c LEFT JOIN webfinal.users u ON c.teacher_id = u.user_id " +
+            "ORDER BY c.create_at DESC LIMIT 6")
+    CourseImageDTO[] getLatest();
 }

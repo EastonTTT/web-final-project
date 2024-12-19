@@ -3,6 +3,7 @@ package org.backend.finalProject.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.backend.finalProject.Mapper.CourseMapper;
 import org.backend.finalProject.Pojo.CourseDTO;
+import org.backend.finalProject.Pojo.CourseImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +65,43 @@ public class CourseService {
         }catch (Exception e){
             System.out.println(e.getMessage());
             return false;
+        }
+    }
+
+    //获取所有课程图片URL
+    public CourseImageDTO[] getAllImage(){
+        try {
+            return courseMapper.getAllImage();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public CourseImageDTO[] getRecommend() {
+        try {
+            return courseMapper.getRecommend();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public CourseImageDTO[] getPopular() {
+        try {
+            return courseMapper.getPopular();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public CourseImageDTO[] getLatest() {
+        try {
+            return courseMapper.getLatest();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }
