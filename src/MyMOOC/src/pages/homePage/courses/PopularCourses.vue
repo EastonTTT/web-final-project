@@ -3,11 +3,11 @@
   <div class="popular-course">
     <div class="title-pic"><img src="@/assets/result.png" alt="pic" height="200px" ></div>
     <div class="container">
-      <div class="course-container" v-for="image in images" :key="image.id">
+      <div class="course-container" v-for="image in images" :key="image.url">
       <div class="img-container" >
-        <img :src="image.url" :alt="image.alt">
-        <h3>image title</h3>
-        <p>school / teacher</p>
+        <img :src="image.url" :alt="image.course_name" style="border-radius: 10px;">
+        <h3>{{image.course_name}}</h3>
+        <p>{{image.teacher}}</p>
       </div>
 
     </div>
@@ -20,23 +20,46 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import MyAxios from '@/utils/request/Axios';
+import { MessagePlugin } from 'tdesign-vue-next';
 
+interface dataType{
+  url: string
+  course_id: number
+  course_name: string
+  teacher: string
+}
 
-const images = ref([
-      { id: 1, url: 'http://localhost:5173/src/assets/uooc.png' },
-      { id: 2, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-])
+let images = ref<dataType[]>([]);
+
+getImage()
+
+async function getImage(){
+  try{
+    const response = await MyAxios.myGetting('/courses/getPopular');
+    console.log(response)
+    if(response.status === 200){
+      images.value = response.data.map(item => ({
+      url: '/assets/' + item.course_image,
+      course_id: item.course_id,
+      course_name: item.course_name,
+      teacher: item.userName,
+  }));
+      console.log(images.value)
+    }else{
+      MessagePlugin.error('获取图片失败..');
+    }
+  }catch(error){
+    MessagePlugin.error('获取请求失败..');
+  }
+}
 </script>
+
+
 
 <style lang="less" scoped>
 .popular-course{
-  margin: 30px 0;
+  margin: 50px 40px 0 0;
   .title-pic{
     text-align: center;
     img{
@@ -55,9 +78,11 @@ const images = ref([
     margin-top: 20px;
 
     .img-container{
+      text-align: center;
       margin: 25px;
-      border: 1px solid #000;
+      // border: 1px solid #000;
       // display: flex;
+      border-radius: 10px;
       overflow: hidden;
       width: 300px;
       flex-shrink: 0;

@@ -144,7 +144,9 @@ function logout(){
     margin: 12px 5px;
   }
 
-
+  .el-dropdown-link:focus {
+      outline: none;
+}
 
 }
 </style>

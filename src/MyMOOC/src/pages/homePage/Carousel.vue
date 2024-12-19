@@ -1,11 +1,47 @@
 <!-- 轮播图组件 -->
 <template>
   <el-carousel autoplay :interval="5000" type="card" height="450px" loop pause-on-hover >
-    <el-carousel-item v-for="item in 6" :key="item">
-      <h3 text="2xl" justify="center">{{ item }}</h3>
+    <el-carousel-item v-for="image in images" :key="image.course_id">
+      <router-link :to="`/courses/${image.course_id}`">
+        <img :src="image.url" :alt="image.url" style="width: 100%; height: 100%; object-fit: cover;border-radius: 10px;">
+      </router-link>
     </el-carousel-item>
   </el-carousel>
 </template>
+
+<script lang="ts" setup>
+import MyAxios from '@/utils/request/Axios';
+import {ref} from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next';
+
+interface dataType{
+  url: string
+  course_id: number
+}
+
+let images = ref<dataType[]>([]);
+
+getImage();
+
+async function getImage(){
+  try{
+    console.log(name);
+    const response = await MyAxios.myGetting('/courses/imageAll');
+    console.log(response)
+    if(response.status === 200){
+      images.value = response.data.map(item => ({
+      url: '/assets/' + item.course_image,
+      course_id: item.course_id
+  }));
+      console.log(images.value)
+    }else{
+      MessagePlugin.error('获取图片失败..');
+    }
+  }catch(error){
+    MessagePlugin.error('获取请求失败..');
+  }
+}
+</script>
 
 <style scoped>
 .el-carousel__item h3 {

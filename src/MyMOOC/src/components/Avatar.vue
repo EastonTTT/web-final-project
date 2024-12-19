@@ -26,4 +26,5 @@ const { circleUrl,size } = toRefs(state)
   align-items: center;
 }
 
+
 </style>

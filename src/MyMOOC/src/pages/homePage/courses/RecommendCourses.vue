@@ -5,11 +5,11 @@
        <h1>Advanced Course Recommendations</h1>
     </div>
     <div class="container">
-      <div class="course-container" v-for="image in images" :key="image.id">
+      <div class="course-container" v-for="image in images" :key="image.course_id" >
        <div class="img-container" >
-        <img height="150px" :src="image.url" :alt="image.alt" >
-        <h3>course info</h3>
-        <p> school / teacher</p>
+        <img height="150px" :src="image.url" :alt="image.url" style="border-radius: 10px" >
+        <h3>{{image.course_name}}</h3>
+        <p>{{image.teacher}}</p>
        </div>
     </div>
     </div>
@@ -20,19 +20,40 @@
 </template>
 
 <script lang="ts" setup>
-
 import { ref } from 'vue';
+import MyAxios from '@/utils/request/Axios';
+import { MessagePlugin } from 'tdesign-vue-next';
+interface dataType{
+  url: string
+  course_id: number
+  course_name: string
+  teacher: string
+}
 
-const images = ref([
-      { id: 1, url: 'http://localhost:5173/src/assets/uooc.png' },
-      { id: 2, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-      { id: 3, url: 'http://localhost:5173/src/assets/uooc.png', alt: 'Yet another random image' },
-])
+let images = ref<dataType[]>([]);
+
+getImage()
+
+async function getImage(){
+  try{
+    const response = await MyAxios.myGetting('/courses/getRecommend');
+    console.log(response)
+    if(response.status === 200){
+      images.value = response.data.map(item => ({
+      url: '/assets/' + item.course_image,
+      course_id: item.course_id,
+      course_name: item.course_name,
+      teacher: item.userName,
+  }));
+      console.log(images.value)
+    }else{
+      MessagePlugin.error('获取图片失败..');
+    }
+  }catch(error){
+    MessagePlugin.error('获取请求失败..');
+  }
+}
+
 </script>
 
 <style lang="less" scoped>
@@ -105,14 +126,14 @@ const images = ref([
   justify-content: space-around;
   margin: 20px 5px 0 5px;
   .img-container{
-    padding: 10px;
-    margin: 0 30px 40px;
-    border: 1px solid #000;
+    margin: 0 25px 30px;
     text-align: center;
     overflow: hidden;
-    width: 250px;
+    border-radius: 10px;
+    width: 265px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    // height: 300px;
+    display: flex;
+    flex-direction: column;
     img{
       // object-fit: contain;
       width: 100%; /* 使图片宽度填满容器 */
@@ -120,9 +141,6 @@ const images = ref([
       object-fit: cover; /* 覆盖容器，保持图片的宽高比 */
 
     }
-
-    display: flex;
-    flex-direction: column;
   }
   &:hover .img-container {
     transform: scale(1.1); /* 鼠标悬停时放大图片 */

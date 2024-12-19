@@ -9,7 +9,7 @@ import { getLoginRecord } from './pages/homePage/login/LoginRecord';
 
 const loginRecord = reactive(getLoginRecord());
 provide('loginRecord',loginRecord);
-console.log(loginRecord)
+// console.log(loginRecord)
 </script>
 
 

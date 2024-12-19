@@ -34,7 +34,7 @@ import { useRouter } from 'vue-router';
 // import { defineEmits } from 'vue';
 // import { LogStatus } from '@/pages/homePage/login/LogStatus';
 import { setLoginRecord } from '@/pages/homePage/login/LoginRecord';
-import MyAxios from '@/utils/request/Axios.ts';
+import MyAxios from '@/utils/request/Axios';
 
 const router = useRouter()
 const emit = defineEmits(['close-dialog']);
@@ -55,19 +55,19 @@ const rules: FormProps['rules'] = {
   account:[
     {
       required: true,
-      message: '姓名必填',
+      message: '账号必填',
       type: 'error',
       trigger: 'blur',
     },
     {
       required: true,
-      message: '姓名必填',
+      message: '账号必填',
       type: 'error',
       trigger: 'change',
     },
     {
       whitespace: true,
-      message: '姓名不能为空',
+      message: '账号不能为空',
     },
     {
       max: 15,

@@ -38,4 +38,9 @@ import {LaptopIcon,Calculation1Icon,ToolsCircleIcon,PaletteIcon,ChatHeartIcon,Bo
     font-size: 15px;
   }
 
+  .el-dropdown-link:focus {
+      outline: none;
+}
+
+
 </style>
