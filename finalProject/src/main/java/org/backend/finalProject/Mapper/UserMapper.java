@@ -30,4 +30,7 @@ public interface UserMapper {
 
     @Delete("DELETE FROM webfinal.users WHERE username = #{username}")
     void deleteUser(String username);
+
+    @Update("UPDATE webfinal.users SET password = #{password},email = #{email} WHERE user_id = #{user_id} ")
+    void updateUser(UserDTO userDTO);
 }

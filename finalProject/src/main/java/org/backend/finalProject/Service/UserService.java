@@ -65,4 +65,14 @@ public class UserService {
     }
 
     public List<UserDTO> selectAllUser(){ return userMapper.selectAllUser(); }
+
+    public boolean updateInfo(UserDTO userDTO) {
+        try {
+            userMapper.updateUser(userDTO);
+            return true;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

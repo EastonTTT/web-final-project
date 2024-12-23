@@ -53,10 +53,10 @@ public interface CourseMapper {
             "WHERE c.is_recommended = 1")
     CourseImageDTO[] getRecommend();
 
-    @Select("SELECT cr.course_id,c.course_name,c.course_image ,COUNT(cr.student_id) AS quantity,u.username " +
+    @Select("SELECT c.course_id,c.course_name,c.course_image ,COUNT(cr.student_id) AS quantity,u.username " +
             "FROM webfinal.courses c LEFT JOIN webfinal.course_registrations cr on c.course_id = cr.course_id " +
             "LEFT JOIN webfinal.users u on u.user_id = c.teacher_id " +
-            "GROUP BY cr.course_id,c.course_name,c.course_image,u.username " +
+            "GROUP BY cr.course_id,c.course_name,c.course_image,u.username,c.course_id " +
             "ORDER BY quantity DESC ")
     CourseImageDTO[] getPopular();
 

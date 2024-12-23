@@ -56,5 +56,14 @@ public class UserController {
         }
     }
 
+    @PostMapping("/updateInfo")
+    public Result updateInfo(@RequestBody UserDTO userDTO){
+        if(userService.updateInfo(userDTO)){
+            return Result.success("更新信息成功");
+        }else {
+            return Result.failed("更新信息失败");
+        }
+    }
+
 
 }
