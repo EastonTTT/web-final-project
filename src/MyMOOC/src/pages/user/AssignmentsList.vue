@@ -75,7 +75,7 @@ interface Course {
   course_name: string;
   // 其他课程相关字段...
 }
-
+// export {fetchCoursesAndAssignments}
 export default defineComponent({
   name: 'AssignmentsList',
   setup() {

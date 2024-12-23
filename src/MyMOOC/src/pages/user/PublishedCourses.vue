@@ -133,7 +133,7 @@
           </div>
           <div class="form-actions">
             <button type="button" class="btn cancel-btn" @click="closeAssignModal">取消</button>
-            <button type="submit" class="btn submit-btn">布置作业</button>
+            <button type="submit" class="btn submit-btn" >布置作业</button>
           </div>
         </form>
       </div>

@@ -15,7 +15,9 @@
           <div class="container">
             <div class="course-container" v-for="image in images" :key="image.course_id">
              <div class="img-container">
-              <img :src="image.url" :alt="image.course_name" style="border-radius: 10px;">
+              <router-link :to="`/courses/${image.course_id}`">
+                <img :src="image.url" :alt="image.course_name" style="border-radius: 10px;">
+              </router-link>
               <h3>{{image.course_name}}</h3>
               <p>{{image.teacher}}</p>
             </div>

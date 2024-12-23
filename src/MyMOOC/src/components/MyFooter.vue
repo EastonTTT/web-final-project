@@ -44,7 +44,7 @@
     .text-content{
       span{
         font-size: 14px;
-        color: white;
+        color: #7d7d7d;
       }
       .break-line{
         margin-top: 10px;

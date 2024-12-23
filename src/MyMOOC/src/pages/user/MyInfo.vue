@@ -43,7 +43,7 @@
 
       <t-form-item>
         <t-space size="small">
-          <t-button theme="primary" type="submit">提交</t-button>
+          <t-button theme="primary" type="submit" @click="updateMyInfo">提交</t-button>
           <!-- <t-button theme="default" variant="base" type="reset">重置</t-button> -->
         </t-space>
       </t-form-item>
@@ -96,14 +96,14 @@ const emailOptions = computed<AutoCompleteProps['options']>(() => {
 const onReset: FormProps['onReset'] = () => {
   MessagePlugin.success('重置成功');
 };
-const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
-  if (validateResult === true) {
-    MessagePlugin.success('提交成功');
-  } else {
-    console.log('Errors: ', validateResult);
-    MessagePlugin.warning(firstError);
-  }
-};
+// const onSubmit: FormProps['onSubmit'] = ({ validateResult, firstError }) => {
+//   if (validateResult === true) {
+//     MessagePlugin.success('提交成功');
+//   } else {
+//     console.log('Errors: ', validateResult);
+//     MessagePlugin.warning(firstError);
+//   }
+// };
 
 const rules: FormProps['rules'] = {
   account: [
@@ -123,14 +123,14 @@ const rules: FormProps['rules'] = {
     {
       required: true,
     },
-    {
-      len: 8,
-      message: '请输入 8 位密码',
-    },
-    {
-      pattern: /[A-Z]+/,
-      message: '密码必须包含大写字母',
-    },
+    // {
+    //   len: 8,
+    //   message: '请输入 8 位密码',
+    // },
+    // {
+    //   pattern: /[A-Z]+/,
+    //   message: '密码必须包含大写字母',
+    // },
   ],
   email: [
     {
@@ -144,6 +144,24 @@ const rules: FormProps['rules'] = {
   ],
 };
 
+async function updateMyInfo(){
+  try{
+    const response = await MyAxios.myPosting('/user/updateInfo',{
+      password: formData.password,
+      email: formData.email,
+      user_id:loginRecord.user_id
+    });
+    if(response.status === 200){
+      MessagePlugin.success('更新个人信息成功');
+      getMyInfo();
+    }else{
+      MessagePlugin.error('更新信息：' + response.message)
+    }
+  }catch(error){
+    console.log('更新个人信息失败',error)
+    MessagePlugin.error('请求失败')
+  }
+}
 async function getMyInfo(){
   try{
       const response = await MyAxios.myGetting(`user/${loginRecord.user_id}`);

@@ -31,7 +31,6 @@
           <el-dropdown-menu>
             <el-dropdown-item command="a" @click="goToUser">个人中心</el-dropdown-item>
             <el-dropdown-item command="b" divided @click="logout">退出登录</el-dropdown-item>
-            <el-dropdown-item command="c" divided>Action 3</el-dropdown-item>
 
           </el-dropdown-menu>
         </template>

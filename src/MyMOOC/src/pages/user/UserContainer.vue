@@ -3,7 +3,7 @@
   <t-aside>
     <t-menu theme="light" :value="menuValue" style="margin-right: 50px" height="550px">
       <template #logo>
-        <img width="136" class="logo" src="https://www.tencent.com/img/index/menu_logo_hover.png" alt="logo" />
+        <!-- <img width="136" class="logo" src="https://www.tencent.com/img/index/menu_logo_hover.png" alt="logo" /> -->
       </template>
 
       <t-menu-item value="my-info" style="height: 60px" @click="goToPersonal">

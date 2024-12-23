@@ -4,7 +4,7 @@
     <el-table :data="tableData" style="width: 100%" height="600" :row-style="{height: '60px'}">
       <el-table-column fixed prop="date" label="Date" width="200" />
       <el-table-column prop="name" label="Name" width="200" />
-      <el-table-column prop="email" label="Email" width="300" />
+      <el-table-column prop="email" label="Email" width="200" />
       <el-table-column prop="role" label="Role" width="200" />
       <el-table-column fixed="right" label="Operations" min-width="200">
         <template v-slot="scope">
